@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>皖西学院财务报销助手</title>
+<style>
+  :root {
+    --primary: #1a5276;
+    --primary-light: #2980b9;
+    --bg: #f5f7fa;
+    --card: #fff;
+    --text: #2c3e50;
+    --muted: #7f8c8d;
+    --border: #e0e4e8;
+    --accent: #e74c3c;
+    --success: #27ae60;
+    --warning: #f39c12;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+
+  /* Header */
+  .header { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: #fff; padding: 28px 24px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.15); }
+  .header h1 { font-size: 1.6em; margin-bottom: 4px; }
+  .header p { opacity: 0.85; font-size: 0.9em; }
+
+  /* Layout */
+  .app { max-width: 1100px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 380px; gap: 20px; }
+  @media (max-width: 900px) { .app { grid-template-columns: 1fr; } }
+
+  /* Search */
+  .search-bar { position: sticky; top: 110px; z-index: 90; margin: 0 20px 0; }
+  .search-bar input { width: 100%; max-width: 1100px; margin: 0 auto; display: block; padding: 14px 20px; font-size: 1.05em; border: 2px solid var(--border); border-radius: 12px; outline: none; transition: border 0.2s; background: var(--card); box-shadow: var(--shadow); }
+  .search-bar input:focus { border-color: var(--primary-light); }
+  .search-hint { text-align: center; margin-top: 6px; font-size: 0.82em; color: var(--muted); }
+
+  /* Cards */
+  .card { background: var(--card); border-radius: 12px; padding: 20px 24px; margin-bottom: 16px; box-shadow: var(--shadow); border-left: 4px solid var(--primary-light); transition: transform 0.15s; }
+  .card:hover { transform: translateY(-1px); }
+  .card h3 { color: var(--primary); font-size: 1.1em; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .card .badge { display: inline-block; font-size: 0.75em; padding: 2px 10px; border-radius: 20px; font-weight: 600; }
+  .badge-research { background: #e8f6f3; color: #16a085; }
+  .badge-admin { background: #eaf2f8; color: #2980b9; }
+  .badge-all { background: #fef9e7; color: #d4ac0d; }
+  .badge-warn { background: #fdedec; color: #e74c3c; }
+  .card .content { font-size: 0.95em; }
+  .card .content ul { padding-left: 20px; }
+  .card .content li { margin: 4px 0; }
+  .card .content table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin: 8px 0; }
+  .card .content td, .card .content th { border: 1px solid var(--border); padding: 6px 10px; text-align: left; }
+  .card .content th { background: #f0f3f7; }
+  .highlight { background: #fff3cd; padding: 0 2px; border-radius: 3px; }
+  .no-result { text-align: center; padding: 40px; color: var(--muted); font-size: 1.1em; }
+
+  /* Sidebar */
+  .sidebar { position: sticky; top: 160px; align-self: start; }
+  .sidebar .card { border-left: 4px solid var(--warning); }
+  .sidebar h4 { color: var(--primary); margin-bottom: 10px; }
+  .quick-btn { display: block; width: 100%; text-align: left; padding: 10px 14px; margin: 4px 0; background: #f8f9fa; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 0.9em; transition: all 0.15s; font-family: inherit; }
+  .quick-btn:hover { background: var(--primary-light); color: #fff; border-color: var(--primary-light); }
+  .tag-filter { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .tag { padding: 5px 12px; border-radius: 16px; cursor: pointer; font-size: 0.82em; border: 1px solid var(--border); background: #fff; transition: all 0.15s; user-select: none; }
+  .tag.active { background: var(--primary-light); color: #fff; border-color: var(--primary-light); }
+  .tag:hover { border-color: var(--primary-light); }
+  .result-count { font-size: 0.85em; color: var(--muted); margin-bottom: 10px; }
+
+  /* Footer */
+  .footer { text-align: center; padding: 20px; color: var(--muted); font-size: 0.82em; }
+
+  /* Collapsible detail */
+  details { margin: 6px 0; }
+  details summary { cursor: pointer; color: var(--primary-light); font-weight: 500; padding: 4px 0; }
+  details .steps { margin-top: 8px; padding: 12px 16px; background: #f8fafb; border-radius: 8px; font-size: 0.9em; }
+  .emoji-icon { font-size: 1.3em; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>💰 皖西学院财务报销助手</h1>
+  <p>报销知识库 · 智能检索 · 场景导航</p>
+</div>
+
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="🔍  输入问题或关键词搜索，例如：科研类2万以下采购需要什么附件？电子发票怎么处理？" autofocus>
+  <div class="search-hint">💡 支持自然语言提问，支持模糊匹配 | 快捷键 <kbd>Ctrl+K</kbd> 聚焦搜索 | <kbd>Esc</kbd> 清空</div>
+</div>
+
+<div class="app">
+  <!-- Main content -->
+  <div id="results">
+    <div id="resultCount" class="result-count" style="margin-bottom:12px;"></div>
+    <div id="cardContainer"></div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="card" style="border-left-color:#8e44ad; background:linear-gradient(135deg,#faf5ff,#fdf2f8);">
+      <h4>👤 个人信息</h4>
+      <div style="font-size:0.9em; line-height:1.8;">
+        <div>🏫 皖西学院材化学院</div>
+        <div>👨‍🔬 李洋</div>
+        <div>📧 lycrystal@wxc.edu.cn</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h4>📂 场景快捷导航</h4>
+      <button class="quick-btn" onclick="searchBy('仪器购买')">🔬 仪器购买流程</button>
+      <button class="quick-btn" onclick="searchBy('试剂耗材网购')">🛒 试剂耗材网购</button>
+      <button class="quick-btn" onclick="searchBy('差旅费')">✈️ 差旅费报销</button>
+      <button class="quick-btn" onclick="searchBy('专利')">📜 专利费报销</button>
+      <button class="quick-btn" onclick="searchBy('测试费')">🧪 测试费报销</button>
+      <button class="quick-btn" onclick="searchBy('会议费')">📋 会议费报销</button>
+      <button class="quick-btn" onclick="searchBy('入库单')">📦 入库/出库操作</button>
+      <button class="quick-btn" onclick="searchBy('公务卡')">💳 公务卡使用规定</button>
+    </div>
+
+    <div class="card">
+      <h4>🏷️ 分类筛选</h4>
+      <div class="tag-filter">
+        <span class="tag active" onclick="filterBy('all', this)">全部</span>
+        <span class="tag" onclick="filterBy('流程', this)">📋 操作流程</span>
+        <span class="tag" onclick="filterBy('附件', this)">📎 附件清单</span>
+        <span class="tag" onclick="filterBy('规则', this)">⚖️ 规则制度</span>
+        <span class="tag" onclick="filterBy('票据', this)">🧾 票据管理</span>
+        <span class="tag" onclick="filterBy('系统', this)">💻 系统操作</span>
+        <span class="tag" onclick="filterBy('FAQ', this)">❓ 常见问题</span>
+      </div>
+    </div>
+
+    <div class="card" style="border-left-color: var(--accent);">
+      <h4>⚠️ 高频要点速查</h4>
+      <div style="font-size:0.88em; line-height:2;">
+        <div>📌 ≤2万科研采购 → <strong>直接买，无需审批</strong></div>
+        <div>📌 发票抬头 → <strong>皖西学院</strong></div>
+        <div>📌 票据有效期 → <strong>1年内</strong></div>
+        <div>📌 验收人 → <strong>必须是奇数</strong></div>
+        <div>📌 办公用品 → ≤经费的<strong>5%</strong></div>
+        <div>📌 合同 → ≥<strong>2万元</strong>须有合同</div>
+        <div>📌 借款 → <strong>3个月</strong>内归还</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <div style="margin-bottom:4px;">基于《皖西学院财务报销简明指南（2023年版）》+《财务报销流程及注意事项》整理 · 政策以财务处最新通知为准</div>
+</div>
+
+<script>
+// ==================== 知识库数据 ====================
+const knowledgeBase = [
+  // ===== 发票抬头 =====
+  {
+    id: 1, category: "票据", tags: ["发票抬头","票据"],
+    title: "发票抬头应该开什么？",
+    content: `
+      <table>
+        <tr><th>资金类型</th><th>付款单位（发票抬头）</th></tr>
+        <tr><td><strong>普通经费（最常用）</strong></td><td><strong>皖西学院</strong></td></tr>
+        <tr><td>党费支出</td><td>中国共产党皖西学院委员会</td></tr>
+        <tr><td>工会经费支出</td><td>中国教育工会皖西学院委员会</td></tr>
+      </table>
+      <p style="margin-top:8px;">⚠️ <strong>可开个人抬头的例外</strong>：机票、火车票、出差人身意外保险费、电话费、个人抬头的财政收据签证费、职业技能鉴定/职业资格认证费、医药费票据等。</p>
+      <p>开票信息详见：<a href="https://cwc.wxc.edu.cn/2016/0325/c5918a36966/page.htm" target="_blank">财务处官网</a></p>
+    `
+  },
+  {
+    id: 2, category: "票据", tags: ["电子发票","纸质发票","发票要求"],
+    title: "发票有效性和基本要求",
+    content: `
+      <ul>
+        <li>✅ 发票/财政收据须加盖<strong>发票专用章</strong>（电子发票可无章）</li>
+        <li>✅ 电子发票须承诺<strong>已验真、无重复报销</strong>（手写在发票下方："此电子发票已验证，无重复报销" + 签名）</li>
+        <li>❌ 注明"不得作为报销凭证"的票据 → <strong>不得报销</strong></li>
+        <li>❌ 票据内容不得涂改、挖补 → 错票须由<strong>出具单位重开</strong>（《会计法》第四条）</li>
+        <li>❌ 储值卡/商业预付卡（如石油卡、电信卡）预存款项 → <strong>不予报销</strong></li>
+      </ul>
+    `
+  },
+  {
+    id: 3, category: "票据", tags: ["票据时效","票据丢失","票据整理"],
+    title: "票据时效、丢失处理和整理规范",
+    content: `
+      <p><strong>⏰ 时效：</strong>票据从<strong>开票日期到报销日期最长不超过1年</strong></p>
+      <p><strong>🔍 丢失处理：</strong></p>
+      <ul>
+        <li><strong>发票丢失：</strong>取得原开票单位发票存根或记账联<strong>复印件</strong> + 加盖原单位<strong>财务专用章</strong> + 承诺该票据未在任何单位报销或退款</li>
+        <li><strong>车船票/飞机票丢失：</strong>当事人<strong>书面说明</strong> + 订票记录（参会须附会议通知）+ 部门领导签署意见</li>
+      </ul>
+      <p><strong>📐 整理规范：</strong></p>
+      <ul>
+        <li>面积过小的票据（火车票、出租车票、购物小票）→ 在《皖西学院原始凭证粘贴单》上均匀、层叠错开平铺粘贴</li>
+        <li>报销封面及附件用<strong>回形针或大头针</strong>固定，勿用浆糊和订书针</li>
+      </ul>
+    `
+  },
+
+  // ===== 审批流程 =====
+  {
+    id: 10, category: "流程", tags: ["科研采购","审批流程","金额阈值"],
+    title: "科研类采购审批流程（按金额分档）",
+    content: `
+      <p>🔑 <strong>关键时间节点：2023年12月19日</strong>——此后规则有重大简化！</p>
+      <table>
+        <tr><th>金额范围</th><th>审批要求</th><th>核心附件</th></tr>
+        <tr><td><strong>≤2万元</strong></td><td>✅ 直接采购，<strong>无需申请/比价/审批</strong></td><td>发票及清单 + 验收报告</td></tr>
+        <tr><td><strong>2万~5万元</strong></td><td>项目负责人 + 项目单位负责人签字</td><td>采购申请表 + 验收报告</td></tr>
+        <tr><td><strong>5万~10万元</strong></td><td>项目负责人 + 单位负责人 + 科研处/人事处等 + 分管校领导</td><td>+ 市场比选/商谈/网络平台记录表 + 合同</td></tr>
+        <tr><td><strong>>10万元</strong></td><td>由<strong>国资处</strong>负责采购</td><td>发票清单 + 合同 + 资产入库单 + 验收报告</td></tr>
+      </table>
+    `
+  },
+  {
+    id: 11, category: "流程", tags: ["非科研采购","行政采购","教学采购"],
+    title: "非科研类采购审批流程（按金额分档）",
+    content: `
+      <table>
+        <tr><th>金额范围</th><th>审批要求</th><th>核心附件</th></tr>
+        <tr><td><strong>≤2万元</strong></td><td>项目负责人 + 项目单位负责人签字</td><td>采购申请表 + 验收报告（优先网络平台采购）</td></tr>
+        <tr><td><strong>2万~5万元</strong></td><td>+ 国资处 + 分管校领导签字</td><td>采购申请表 + 验收报告 + 比选/商谈/网络平台记录表 + 合同</td></tr>
+        <tr><td><strong>>5万元</strong></td><td>由<strong>国资处</strong>负责采购</td><td>发票清单 + 合同 + 资产入库单 + 验收报告</td></tr>
+      </table>
+    `
+  },
+  {
+    id: 12, category: "规则", tags: ["办公用品","采购限制"],
+    title: "办公用品采购特别规定",
+    content: `
+      <ul>
+        <li><strong>非科研类：</strong>须在<strong>徽采云</strong>网络平台采购；教研类项目办公用品金额 ≤ 项目经费的<strong>5%</strong></li>
+        <li><strong>科研类：</strong>可自行采购，金额 ≤ 项目经费的<strong>5%</strong></li>
+        <li>❌ 不得采购与项目无关物品（如眼镜、台灯、公文包等）</li>
+      </ul>
+    `
+  },
+
+  // ===== 场景流程 =====
+  {
+    id: 20, category: "流程", tags: ["仪器购买","经销商","完整流程"],
+    title: "仪器购买完整流程（经销商处购买）",
+    content: `
+      <p><strong>整体流程：</strong>采购申请 → 比价单(不填日期) → 零星活动记录表 → 发票 → 项目验收报告 → 入库 → 出库 → 财务报销申请 → 财务处交材料</p>
+      <details><summary><strong>📋 点击展开详细步骤</strong></summary>
+      <div class="steps">
+        <p><strong>（1）采购申请</strong>（信息门户 → 采购管理系统 → 科研类 → 采购申请货物类）</p>
+        <ul>
+          <li>项目名称：选择报销项目（非自己项目需手动输入财政报销代码）</li>
+          <li>申购名称：仪器</li>
+          <li>设备是否有存放地址：<strong>选否</strong></li>
+          <li>总价：可估高一些</li>
+          <li>采购品目：仪器/试剂/耗材→货物类；测试费→服务类</li>
+          <li>提交后 → 采购审核（自己审核自己）</li>
+        </ul>
+        <p><strong>（2）零星活动记录表</strong>（≤2万元不需要）</p>
+        <ul>
+          <li>采购单位：全称（需盖学院公章）</li>
+          <li>采购方式：市场比选</li>
+          <li>供应商选择原则：勾选"有效低价原则"</li>
+          <li>采购经办人员：<strong>自己（只能是自己）</strong></li>
+          <li>采购同行人员：<strong>2位学校教职工</strong>（与验收人员不能相同）</li>
+          <li>领导意见：写"同意"，院长签字</li>
+        </ul>
+        <p><strong>（3）发票：</strong>纸质直接交；电子则打印</p>
+        <p><strong>（4）验收报告：</strong>合同履约时间=采购记录表时间；合同完成日期=发票日期；验收组员<strong>2人</strong>（与采购同行人员不能重复）；院长签字+公章</p>
+        <p><strong>（5）比价单：</strong>（≤2万元不需要）最好不要写日期</p>
+      </div></details>
+    `
+  },
+  {
+    id: 21, category: "流程", tags: ["试剂耗材","经销商"],
+    title: "试剂耗材购买流程（经销商处购买）",
+    content: `
+      <p><strong>整体流程：</strong>零星活动记录表 → 比价单 → 发票 → 项目验收报告 → 入库 → 出库 → 财务报销申请 → 财务处交材料</p>
+      <p>与仪器购买流程基本一致，主要差异：</p>
+      <ul>
+        <li>采购项目填"实验用试剂耗材"</li>
+        <li>比价单<strong>两份都需盖公司章</strong></li>
+        <li>⚠️ <strong>不能长时间在同一家公司买</strong>，要么换公司，要么时间隔开</li>
+      </ul>
+    `
+  },
+  {
+    id: 22, category: "流程", tags: ["试剂耗材","网购","网上自购"],
+    title: "试剂耗材购买流程（自己网上购买）",
+    content: `
+      <p><strong>整体流程：</strong>发票 → 交易记录截图 → 付款记录 → 验收报告 → 入库 → 出库 → 报销申请 → 财务处交材料</p>
+      <p><strong>前期准备：</strong></p>
+      <ul>
+        <li>发票：同经销商流程</li>
+        <li>交易记录截图：带<strong>订单号、日期、物品名称及金额</strong></li>
+        <li>付款记录：带<strong>订单号、日期、支付方式、物品名称及金额</strong></li>
+      </ul>
+      <p>⚠️ <strong>非公务卡支付需写情况说明：</strong>"该订单由于商家不支持信用卡，所以采用余额宝/工资卡支付。" 签字</p>
+      <p><strong>验收报告（网购专用格式）：</strong></p>
+      <ul>
+        <li>中标单位：发票上的单位名称（⚠️ 不是淘宝店铺名）；多家一起报写"详见发票"</li>
+        <li>合同完成时间：最后一张发票日期 + 1~2天</li>
+        <li>验收小组组长：1人；验收组员：2人（<strong>均不能是项目负责人</strong>）</li>
+        <li>单位负责人：谢院长</li>
+      </ul>
+    `
+  },
+  {
+    id: 23, category: "流程", tags: ["测试费","校内转账"],
+    title: "测试费报销流程",
+    content: `
+      <p>在报销系统里选：<strong>委托业务费 → 其他委托业务费</strong></p>
+      <p><strong>校内分析测试中心转账：</strong></p>
+      <ol>
+        <li>预算代码：项目财政代码</li>
+        <li>经办人：自己</li>
+        <li>收方单位：皖西学院实训部分析测试中心</li>
+        <li>转账事由：支付测试费用</li>
+        <li>部门领导签字：郝院长</li>
+        <li>项目管理部门审核：人事处项目→人事处处长；科研处项目→科研处处长</li>
+      </ol>
+    `
+  },
+  {
+    id: 24, category: "流程", tags: ["专利","软著","知识产权"],
+    title: "专利/软著费报销流程",
+    content: `
+      <ol>
+        <li>填《皖西学院专利/软著申请表》（自己签字 + 院长签字盖章 + 科研处签字盖章；科研处复印一份，原件自己留存）</li>
+        <li>签专利合同 + 专利受理通知 + 开发票</li>
+        <li>财务处申请报销：填项目号，选择<strong>出版/文献/信息传播/知识产权事务费 → 其他委托业务费</strong></li>
+        <li>填对方账号等信息，上传附件</li>
+      </ol>
+      <p>⚠️ <strong>注意事项：</strong></p>
+      <ul>
+        <li>专利申请审批表日期在受理通知书之后 → 不允许报销</li>
+        <li>软著申请需等证书下达并完成入库登记后方可报销</li>
+        <li>国际专利需科研处在报销封面签字</li>
+        <li>专利/软著申请费用必须从<strong>横向课题</strong>开支</li>
+      </ul>
+    `
+  },
+  {
+    id: 25, category: "流程", tags: ["会议费","培训费"],
+    title: "会议费/培训费报销",
+    content: `
+      <p><strong>附件要求：</strong></p>
+      <ol>
+        <li>会议通知</li>
+        <li>发票（普票或专票均可）</li>
+        <li>车票：若无直达需截屏证明，才能报销中转票</li>
+        <li>延迟返回：需在财务处拿报销说明，说明是因私还是因公</li>
+      </ol>
+      <p>⚠️ 学校举办培训/会议费发生的一切费用，<strong>不得分开报销</strong>。不得列支招待费、背景板、花草等。</p>
+    `
+  },
+  {
+    id: 26, category: "流程", tags: ["差旅费","出差"],
+    title: "差旅费报销要求",
+    content: `
+      <p><strong>报销附件：</strong></p>
+      <ul>
+        <li>公务出差审批单（处级领导外出需<strong>校级领导双审批</strong>）</li>
+        <li>车船票、机票</li>
+        <li>住宿发票</li>
+        <li>会议费/培训费发票</li>
+        <li>证明出差事由的支撑材料（会议/培训通知等）</li>
+        <li>公务刷卡记录或转账信息</li>
+        <li>若用车：《皖西学院公务活动社会化车辆租赁审批表》（科研除外）</li>
+      </ul>
+    `
+  },
+  {
+    id: 27, category: "流程", tags: ["办公用品","科研类"],
+    title: "办公用品报销（科研类）",
+    content: `
+      <p>科研类办公用品可自行采购，<strong>无需申请，直接买</strong>。</p>
+      <p><strong>报销附件：</strong>支付记录 + 发票 + 报销封面</p>
+    `
+  },
+  {
+    id: 28, category: "流程", tags: ["维修","实验室","仪器维修"],
+    title: "维修实验室仪器流程",
+    content: `
+      <p>国资处 → 采购申请 → <strong>非科研类（服务类）</strong> → 填项目号（实训部网站流程图里可查）→ 提交申请</p>
+    `
+  },
+
+  // ===== 附件速查 =====
+  {
+    id: 30, category: "附件", tags: ["附件清单","速查表"],
+    title: "各类费用报销附件速查表（上）",
+    content: `
+      <table>
+        <tr><th>费用类型</th><th>所需附件</th></tr>
+        <tr><td>办公用品（科研）</td><td>发票（有明细→背面签验收人；无明细→需销货清单+验收签字）、刷卡/转账记录</td></tr>
+        <tr><td>办公用品（非科研）</td><td>徽采云：发票+销货清单+验收单；其他：截图+采购申请表+零星采购记录表+发票+清单</td></tr>
+        <tr><td>邮电费</td><td>发票+邮寄清单、刷卡/转账记录</td></tr>
+        <tr><td>差旅费</td><td>审批单+车船票/机票+住宿发票+会议/培训发票+支撑材料+刷卡记录</td></tr>
+        <tr><td>版面费</td><td>发票+用稿通知（单位须一致）+刷卡记录；外文版需汇率+录用通知翻译件</td></tr>
+        <tr><td>出版专著费</td><td>发票（加盖资产章）+合同（≥2万须有）+资产入库单+刷卡记录</td></tr>
+        <tr><td>外来人员住宿费</td><td>发票+住宿清单（无清单在发票背面注明受邀人姓名/事由/天数+签字）+刷卡记录</td></tr>
+        <tr><td>委托业务费/测试加工费</td><td>采购申请表+零星采购记录表+验收报告（服务类）+发票；有合同则+合同</td></tr>
+        <tr><td>借款</td><td>《皖西学院借款单》一式三联，<strong>3个月内</strong>须报销归还</td></tr>
+      </table>
+    `
+  },
+  {
+    id: 31, category: "附件", tags: ["附件清单","速查表"],
+    title: "各类费用报销附件速查表（中）",
+    content: `
+      <table>
+        <tr><th>费用类型</th><th>所需附件</th></tr>
+        <tr><td>专用材料（水电/绿化/实验用）</td><td>采购申请表+零星采购记录表+验收报告（货物类）+发票及销货清单+出入库单+刷卡记录</td></tr>
+        <tr><td>零星用工</td><td>零星用工审批表+发票（税务代开）+用工费用清单</td></tr>
+        <tr><td>外聘专家劳务费</td><td>校内（外）劳务费审批表（含签到表），需录入<strong>薪酬系统</strong></td></tr>
+        <tr><td>科研绩效</td><td>科研合同+劳务支出审核表+绩效支出申请表/结余经费支付函，需录入<strong>薪酬系统</strong></td></tr>
+        <tr><td>校内专家劳务费</td><td>劳务费审批表（含签到表），半天≤4课时，晚上≤3课时</td></tr>
+        <tr><td>监考费</td><td>监考安排表，需录入<strong>薪酬系统</strong></td></tr>
+        <tr><td>公务接待费</td><td>"三单一函"：接待申报单+原始菜单+餐饮发票+外单位公函</td></tr>
+        <tr><td>学生实习补贴</td><td>实习方案/预算表+文件/纪要，需录入<strong>薪酬系统</strong></td></tr>
+        <tr><td>设备购置费</td><td>发票及销货清单+省级验收报告+固定资产入账单；首次须合同原件</td></tr>
+      </table>
+    `
+  },
+  {
+    id: 32, category: "附件", tags: ["附件清单","速查表"],
+    title: "各类费用报销附件速查表（下）",
+    content: `
+      <table>
+        <tr><th>费用类型</th><th>所需附件</th></tr>
+        <tr><td>专利/软著申请</td><td>审批表+受理通知书或证书复印件+发票（有证书需国资处登记）</td></tr>
+        <tr><td>基建工程（在建）</td><td>发票+合同+进度款支付申请+工程进度材料</td></tr>
+        <tr><td>基建工程（竣工）</td><td>发票+合同+验收单+竣工决算审计报告</td></tr>
+        <tr><td>零星维修工程</td><td>发票+验收单+决算审计报告</td></tr>
+        <tr><td>人才引进</td><td>文件/纪要+合同，需录入<strong>薪酬系统</strong></td></tr>
+        <tr><td>人才出国</td><td>因公出国费用报销单+文件依据+发票+汇率牌价+批件等（外文附件需翻译）</td></tr>
+        <tr><td>内部转账</td><td>财务处领取内部转账单</td></tr>
+        <tr><td>横向科研代购设备</td><td>横向合同（含代购条款）+支出审核表+设备采购合同+发票+代购单位验收表</td></tr>
+        <tr><td>保证金/质保金</td><td>财政票据（电子）+退还申请表/审核表+其他说明材料</td></tr>
+      </table>
+    `
+  },
+
+  // ===== 系统操作 =====
+  {
+    id: 40, category: "系统", tags: ["系统操作","报销申请","网上预约"],
+    title: "财务报销申请系统操作（通用步骤）",
+    content: `
+      <p>📍 <strong>路径：信息门户 → 财务处 → 网上预约报销 → 申请报销单</strong></p>
+      <table>
+        <tr><th>步骤</th><th>操作</th></tr>
+        <tr><td>6.1 填写信息</td><td>附件张数（材料总张数）、摘要（如"仪器设备"）、项目号（自己的直接输；别人的手动输）</td></tr>
+        <tr><td>6.2 金额</td><td>大类→小类，选中，右边框输入金额</td></tr>
+        <tr><td>6.3 支付方式</td><td>经销商→对公汇款（户名+开户行+账号，<strong>必须与发票信息一致</strong>）；自己→转卡（工号+姓名+账号+金额）</td></tr>
+        <tr><td>6.4 上传附件</td><td>全部材料照片或PDF上传（提示"未上传附件"可忽略）</td></tr>
+        <tr><td>6.5 审核</td><td>自己项目→自己审批；别人项目→项目负责人审批</td></tr>
+        <tr><td>6.6 等待</td><td>院长和财务处审核（≤2万无需审批；2-5万需部门审批）</td></tr>
+        <tr><td>6.7 打印</td><td>点"打印确认单"→<strong>保存为PDF</strong>再打印（直接打印会变两页）→证明人找别人填（<strong>不能是自己或验收人员</strong>）</td></tr>
+        <tr><td>6.8 交材料</td><td>按顺序整理所有纸质材料提交至财务处</td></tr>
+      </table>
+    `
+  },
+  {
+    id: 41, category: "系统", tags: ["入库","出库","系统操作"],
+    title: "入库/出库操作要点",
+    content: `
+      <p><strong>前置准备：</strong></p>
+      <ul>
+        <li>低值易耗微应用：工号 → 个人中心 → <strong>上传电子签名</strong></li>
+        <li>财务处系统：预约报销 → 报销信息维护 → 个人信息维护 → 印鉴 → <strong>上传电子签名</strong></li>
+      </ul>
+      <p><strong>入库路径：</strong>信息门户 → 资产管理 → 低值易耗 → 入库管理 → 入库申请 → 新增</p>
+      <ul>
+        <li>仓库：材化学院-贾良武 | 申购单位：材化学院</li>
+        <li>添加物品：点+号 → 新增物品 → 选类别（易耗品/材料/低值品）→ 输入名称/单位 → 复制物品编号 → 回+号界面 → 新增入库 → 粘贴编号 → 改数量单价</li>
+        <li>提交 → 贾老师 + 金磊老师分别审核</li>
+        <li>打印：点击入库单编号 → 另存为PDF → 横向打印</li>
+      </ul>
+      <p><strong>出库：</strong>出库管理 → 出库申请 → <strong>点入库单导入</strong> → 粘贴入库单编号 → 导入 → 提交 → 审核 → 打印</p>
+      <p>⚠️ <strong>退款处理：</strong>找金磊老师全部退回 → 原入库单编辑 → 删旧出库单 → 重新导入入库单号 → 重新出库</p>
+    `
+  },
+
+  // ===== 合同审核 =====
+  {
+    id: 50, category: "规则", tags: ["合同","审核"],
+    title: "合同审核六要素",
+    content: `
+      <table>
+        <tr><th>审核项</th><th>要点</th></tr>
+        <tr><td>当事人信息</td><td>甲方是否为"皖西学院"；乙方名称是否与发票/汇款单位一致</td></tr>
+        <tr><td>标的</td><td>标的物是否与发票品名、单位、数量一致</td></tr>
+        <tr><td>价款</td><td>付款方式、条件、定金等；是否达到付款条件</td></tr>
+        <tr><td>履行因素</td><td>是否分期付款、是否需扣留质保金</td></tr>
+        <tr><td>合同生效</td><td>甲方加盖"皖西学院"或"皖西学院合同专用"公章或"科研合同专用章"；乙方公章与发票单位一致</td></tr>
+        <tr><td>附件</td><td>是否有其他付款约束条件</td></tr>
+      </table>
+      <p style="margin-top:8px;">⚠️ <strong>三方一致原则：</strong>合同签订单位 = 发票单位 = 付款单位，不一致须提供变更授权证明（加盖公章）</p>
+    `
+  },
+
+  // ===== 重要规则 =====
+  {
+    id: 60, category: "规则", tags: ["核心原则","注意事项"],
+    title: "核心报销原则",
+    content: `
+      <ul>
+        <li>🚫 <strong>"一支笔"审批：</strong>经费支出严格执行一支笔审批</li>
+        <li>🚫 <strong>"一事一报"：</strong>报销事项严禁"化整为零"</li>
+        <li>🚫 <strong>回避制度：</strong>审批签字实行回避制度</li>
+        <li>✅ <strong>验收人必须是奇数</strong>（不能是偶数）</li>
+        <li>✅ <strong>采购与验收人员不能为同一人</strong>；采购/验收小组均不少于3人</li>
+        <li>✅ <strong>证明人：</strong>不能填自己，不能是项目验收人员</li>
+      </ul>
+    `
+  },
+  {
+    id: 61, category: "规则", tags: ["公务卡","支付"],
+    title: "公务卡使用规定",
+    content: `
+      <ul>
+        <li>省级预算单位公务卡强制结算目录内的支出 → <strong>必须使用公务卡</strong></li>
+        <li>报销时须附：<strong>POS机刷卡小票</strong> 或 <strong>公务卡银行记录</strong></li>
+        <li>POS机刷卡单位与发票单位要求一致</li>
+        <li>公务卡可绑定支付宝、微信支付</li>
+      </ul>
+      <p><strong>例外（可不用公务卡）：</strong></p>
+      <ol>
+        <li>县级以下（不含县级）地区</li>
+        <li>县级及以上但不具备刷卡条件 + 单笔消费 ≤ 200元</li>
+        <li>支付给个人的支出</li>
+        <li>特殊情形 + 情况说明</li>
+      </ol>
+    `
+  },
+  {
+    id: 62, category: "规则", tags: ["薪酬系统","劳务费","工资"],
+    title: "需录入薪酬系统的费用类型",
+    content: `
+      <p>以下费用均需录入薪酬系统或工资系统：</p>
+      <ul>
+        <li>工资、薪酬、劳务费</li>
+        <li>学生奖助学金、勤工助学补助（需学号+农行卡号）</li>
+        <li>科研绩效、横向结余经费绩效</li>
+        <li>外聘专家劳务费、外（返）聘教师酬金</li>
+        <li>校内专家劳务费、监考费</li>
+        <li>人才引进费用（安家费、住房补贴等）</li>
+        <li>教育教学奖励、辅修/转专业奖励、教授/博士津贴</li>
+      </ul>
+      <p>校内人员需提供工号，校外人员需提供身份证号码和开户银行名称及卡号，个人所得税由学校依法代扣代缴。</p>
+    `
+  },
+  {
+    id: 63, category: "规则", tags: ["阈值","关键数字"],
+    title: "关键数字和阈值速查",
+    content: `
+      <table>
+        <tr><th>项目</th><th>数值</th></tr>
+        <tr><td>科研类简化采购（2023.12.19起）</td><td>≤2万直接采购，无需申请/比价/审批</td></tr>
+        <tr><td>票据最长有效期</td><td>1年（开票日期→报销日期）</td></tr>
+        <tr><td>借款归还期限</td><td>3个月</td></tr>
+        <tr><td>办公用品占项目经费上限</td><td>5%</td></tr>
+        <tr><td>非科研自行采购上限</td><td>≤2万元</td></tr>
+        <tr><td>科研自行采购上限</td><td>≤5万元（5万以上需比选流程）</td></tr>
+        <tr><td>验收组人数要求</td><td>≥3人</td></tr>
+        <tr><td>比价供货商数量</td><td>≥3家</td></tr>
+        <tr><td>合同要求</td><td>≥2万元须有合同</td></tr>
+        <tr><td>科研需国资处采购阈值</td><td>>10万元</td></tr>
+        <tr><td>非科研需国资处采购阈值</td><td>>5万元</td></tr>
+        <tr><td>工会春秋游</td><td>每人每天≤200元，当日返回</td></tr>
+      </table>
+    `
+  },
+
+  // ===== FAQ =====
+  {
+    id: 70, category: "FAQ", tags: ["电子发票","纸质发票"],
+    title: "Q: 电子发票和纸质发票处理有什么区别？",
+    content: `<p>电子发票需打印出来后办理入库，并在发票下方手写"此电子发票已验证，无重复报销"并签名。纸质发票直接使用。</p>`
+  },
+  {
+    id: 71, category: "FAQ", tags: ["网购","支付宝","非公务卡"],
+    title: "Q: 网购用支付宝/余额宝付的款怎么报销？",
+    content: `<p>需打印支付宝订单支付截图，并手写情况说明："该订单由于商家不支持信用卡，所以采用余额宝/工资卡支付。"签上自己的名字。</p>`
+  },
+  {
+    id: 72, category: "FAQ", tags: ["多家购买","合并报销"],
+    title: "Q: 多家买的东西能一起报销吗？",
+    content: `<p>可以。验收报告中标单位写"详见发票"，中标金额按发票金额汇总计算。</p>`
+  },
+  {
+    id: 73, category: "FAQ", tags: ["单位不一致","三方一致"],
+    title: "Q: 发票单位和合同单位不一致怎么办？",
+    content: `<p>须提供变更授权证明并加盖公章。合同签订单位、发票单位、付款单位三者必须一致。</p>`
+  },
+  {
+    id: 74, category: "FAQ", tags: ["票据丢失"],
+    title: "Q: 票据丢失了怎么办？",
+    content: `<p>发票丢失→取得原开票单位存根/记账联复印件+加盖财务专用章+承诺未在任何单位报销。车票丢失→书面说明+订票记录+部门领导签字。</p>`
+  },
+  {
+    id: 75, category: "FAQ", tags: ["打印","报销单"],
+    title: "Q: 报销单打印有什么注意事项？",
+    content: `<p>点"打印确认单"保存为PDF再打印（不要直接打印否则会打两页）。证明人找别人填，不能是自己或项目验收人员。</p>`
+  },
+  {
+    id: 76, category: "FAQ", tags: ["报销进度","查询"],
+    title: "Q: 如何查报销进度？",
+    content: `<p>选中提交的报销单 → 点报销信息查询 → 看实报金额（为零则还没报销）或财务是否入账（有入账表示快打钱了）。</p>`
+  },
+  {
+    id: 77, category: "FAQ", tags: ["2023新政","政策变化"],
+    title: "Q: 2023年12月19日后的政策有什么变化？",
+    content: `<p>科研类采购≤2万元：直接采购，不再需要采购申请表、比价单，也无需主管部门和项目负责部门审批，提交发票和验收报告即可，出库入库和后面报销程序不变。2万-5万：需主管部门和项目负责人同时审批。</p>`
+  },
+  {
+    id: 78, category: "FAQ", tags: ["医药费","校医院"],
+    title: "Q: 教职工/学生医药费怎么报销？",
+    content: `<p>由校医院按照相关文件进行计算审核后，报后勤保障处进行审批报销，财务仅审核审批流程是否完成。附件：医药费计算书（须校医院公章签字）+发票+其他相关材料。</p>`
+  },
+  {
+    id: 79, category: "FAQ", tags: ["工会","春秋游"],
+    title: "Q: 工会春秋游报销有什么要求？",
+    content: `<p>本省或长三角范围内，当日返回。每人每天不超过200元，不可开支景区导游费、补贴费等。报销材料：活动方案及人员名单+出差审批表+社会化车辆租赁审批表+费用发票。不得到明令禁止的风景名胜区。</p>`
+  },
+  {
+    id: 80, category: "FAQ", tags: ["维修","办公设备"],
+    title: "Q: 办公设备维修费报销需要什么？",
+    content: `<p>采购申请表+零星采购活动记录表+验收报告；若有维修耗材还需提供出入库单。</p>`
+  },
+  {
+    id: 81, category: "FAQ", tags: ["市内交通","出租车"],
+    title: "Q: 市内出租车票怎么报销？",
+    content: `<p>出租车票背面需注明外出办事事由，预约报销时背面无需上传图片。</p>`
+  },
+  {
+    id: 82, category: "FAQ", tags: ["图书","资料"],
+    title: "Q: 图书资料费、报刊杂志费报销需要什么？",
+    content: `<p>发票及销货清单 + 刷卡记录或转账信息。</p>`
+  }
+];
+
+// ==================== 搜索与渲染 ====================
+let currentFilter = 'all';
+const container = document.getElementById('cardContainer');
+const searchInput = document.getElementById('searchInput');
+const resultCount = document.getElementById('resultCount');
+
+function renderCards(items) {
+  if (items.length === 0) {
+    container.innerHTML = '<div class="no-result">😕 没有找到匹配的内容，试试其他关键词吧</div>';
+    resultCount.textContent = '';
+    return;
+  }
+  resultCount.textContent = `共找到 ${items.length} 条结果`;
+  container.innerHTML = items.map(item => {
+    let badgeHTML = '';
+    if (item.category === '流程') badgeHTML = '<span class="badge badge-research">操作流程</span>';
+    else if (item.category === '附件') badgeHTML = '<span class="badge badge-admin">附件清单</span>';
+    else if (item.category === '规则') badgeHTML = '<span class="badge badge-warn">规则制度</span>';
+    else if (item.category === '票据') badgeHTML = '<span class="badge badge-all">票据管理</span>';
+    else if (item.category === '系统') badgeHTML = '<span class="badge badge-research">系统操作</span>';
+    else if (item.category === 'FAQ') badgeHTML = '<span class="badge badge-admin">常见问题</span>';
+
+    // Highlight search terms
+    let content = item.content;
+    const query = searchInput.value.trim();
+    if (query) {
+      const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const words = escaped.split(/\s+/);
+      words.forEach(w => {
+        if (w.length > 0) {
+          const re = new RegExp(`(${w})`, 'gi');
+          content = content.replace(re, '<span class="highlight">$1</span>');
+        }
+      });
+    }
+
+    return `
+      <div class="card">
+        <h3>${badgeHTML} ${item.title}</h3>
+        <div class="content">${content}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function doSearch() {
+  const query = searchInput.value.trim().toLowerCase();
+  let items = knowledgeBase;
+
+  // Category filter
+  if (currentFilter !== 'all') {
+    items = items.filter(i => i.category === currentFilter || i.tags.includes(currentFilter));
+  }
+
+  // Text search
+  if (query) {
+    items = items.filter(i => {
+      const searchText = (i.title + ' ' + i.tags.join(' ') + ' ' + i.content).toLowerCase();
+      return query.split(/\s+/).every(word => searchText.includes(word));
+    });
+  }
+
+  renderCards(items);
+}
+
+function searchBy(text) {
+  searchInput.value = text;
+  currentFilter = 'all';
+  document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
+  document.querySelector('.tag').classList.add('active');
+  doSearch();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function filterBy(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  doSearch();
+}
+
+// Event listeners
+searchInput.addEventListener('input', doSearch);
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.key === 'k') {
+    e.preventDefault();
+    searchInput.focus();
+  }
+  if (e.key === 'Escape') {
+    searchInput.value = '';
+    searchInput.focus();
+    doSearch();
+  }
+});
+
+// Initial render
+doSearch();
+</script>
+
+</body>
+</html>
