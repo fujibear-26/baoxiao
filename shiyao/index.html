@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>试剂库存管理系统</title>
+<style>
+  :root {
+    --primary: #1a6b3c;
+    --primary-light: #27ae60;
+    --bg: #f0f4f0;
+    --card: #fff;
+    --text: #2c3e50;
+    --muted: #7f8c8d;
+    --border: #e0e4e8;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif; background: var(--bg); color: var(--text); }
+  .header { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: #fff; padding: 24px 24px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.15); }
+  .header h1 { font-size: 1.5em; margin-bottom: 4px; }
+  .header p { opacity: 0.85; font-size: 0.9em; }
+  .back-link { display: inline-block; margin-top: 6px; color: #fff; opacity: 0.8; font-size: 0.85em; text-decoration: none; }
+  .back-link:hover { opacity: 1; text-decoration: underline; }
+  .search-bar { position: sticky; top: 110px; z-index: 90; margin: 0 auto; padding: 12px 20px 0; max-width: 1200px; }
+  .search-bar input { width: 100%; padding: 12px 18px; font-size: 1em; border: 2px solid var(--border); border-radius: 10px; outline: none; transition: border 0.2s; background: var(--card); box-shadow: var(--shadow); }
+  .search-bar input:focus { border-color: var(--primary-light); }
+  .search-hint { text-align: center; margin-top: 4px; font-size: 0.82em; color: var(--muted); }
+  .controls { max-width: 1200px; margin: 12px auto 0; padding: 0 20px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .controls .result-count { font-size: 0.9em; color: var(--muted); margin-right: auto; }
+  .tag { padding: 5px 14px; border-radius: 16px; cursor: pointer; font-size: 0.82em; border: 1px solid var(--border); background: #fff; transition: all 0.15s; user-select: none; }
+  .tag.active { background: var(--primary-light); color: #fff; border-color: var(--primary-light); }
+  .tag:hover { border-color: var(--primary-light); }
+  .btn { padding: 6px 14px; border-radius: 8px; cursor: pointer; font-size: 0.82em; border: 1px solid var(--border); background: #fff; transition: all 0.15s; font-family: inherit; }
+  .btn:hover { background: #f0f0f0; border-color: #aaa; }
+  .container { max-width: 1200px; margin: 12px auto 20px; padding: 0 20px; }
+  table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); font-size: 0.88em; }
+  thead { background: var(--primary); color: #fff; }
+  th { padding: 10px 10px; text-align: left; font-weight: 600; cursor: pointer; user-select: none; white-space: nowrap; }
+  th:hover { background: rgba(255,255,255,0.1); }
+  th .sort-arrow { font-size: 0.7em; margin-left: 4px; opacity: 0.5; }
+  th.sorted .sort-arrow { opacity: 1; }
+  td { padding: 8px 10px; border-bottom: 1px solid #f0f0f0; }
+  tr:hover { background: #f8faf8; }
+  tr.low { background: #fff5f5; }
+  tr.low:hover { background: #ffe8e8; }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.8em; font-weight: 600; }
+  .badge-ok { background: #e8f8e8; color: #27ae60; }
+  .badge-warn { background: #fef9e7; color: #d4ac0d; }
+  .badge-low { background: #fdedec; color: #e74c3c; }
+  .loc-badge { display: inline-block; padding: 1px 8px; border-radius: 4px; background: #eaf2f8; color: #2980b9; font-size: 0.85em; }
+  .no-result { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 1.1em; }
+  .footer { text-align: center; padding: 16px; color: var(--muted); font-size: 0.8em; }
+  .stats { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; }
+  .stat-card { background: var(--card); border-radius: 10px; padding: 12px 18px; box-shadow: var(--shadow); flex: 1; min-width: 120px; text-align: center; }
+  .stat-card .num { font-size: 1.6em; font-weight: 700; color: var(--primary); }
+  .stat-card .label { font-size: 0.78em; color: var(--muted); margin-top: 2px; }
+  @media (max-width: 768px) { table { font-size: 0.78em; } th, td { padding: 6px 6px; } .controls { gap: 4px; } .tag { font-size: 0.75em; padding: 3px 10px; } }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>🧪 试剂库存管理系统</h1>
+  <p>材化学院 · 李洋 · lycrystal@wxc.edu.cn</p>
+  <a href="/" class="back-link">&larr; 返回首页</a>
+</div>
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="🔍 搜索试剂名称、CAS号、品牌、货号、位置…" autofocus>
+  <div class="search-hint">Ctrl+K 聚焦 · Esc 清空 · 点击表头排序</div>
+</div>
+<div class="controls">
+  <span class="result-count" id="resultCount"></span>
+  <span class="tag active" onclick="filterCat('all',this)">全部</span>
+  <span class="tag" onclick="filterCat('试剂',this)">试剂</span>
+  <span class="tag" onclick="filterCat('耗材',this)">耗材</span>
+  <span class="tag" onclick="filterCat('溶剂',this)">溶剂</span>
+  <span class="tag" onclick="filterCat('标准品',this)">标准品</span>
+  <button class="btn" onclick="filterLow()" id="lowBtn">⚠️ 库存不足</button>
+</div>
+<div class="container">
+  <div class="stats" id="statsBar"></div>
+  <div id="tableContainer"></div>
+</div>
+<div class="footer">皖西学院材化学院 · 李洋 · lycrystal@wxc.edu.cn</div>
+<script id="rawData" type="application/json">[{"cat": "", "name": "三甲基氯化锡", "cas": "1066-45-1", "spec": "5", "brand": "阿拉丁", "purity": "97", "code": "T113979-5g", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "2,2'-联吡啶", "cas": "366-18-7", "spec": "100", "brand": "必得", "purity": "97", "code": "BD17036", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "2,6-吡啶二甲酸", "cas": "499-83-2", "spec": "25", "brand": "必得", "purity": "98", "code": "BD4456", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "2,9-二羧基-1,10-菲罗啉", "cas": "57709-61-2", "spec": "5", "brand": "必得", "purity": "95", "code": "BD52230", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "1,10-菲罗啉", "cas": "66-71-7", "spec": "25", "brand": "Adamas", "purity": "99", "code": "75325B", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "PbCl2", "cas": "7758-95-4", "spec": "100", "brand": "必得", "purity": "99", "code": "BD01397245", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "PbI2", "cas": "10101-63-0", "spec": "25", "brand": "必得", "purity": "99", "code": "BD00832456", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "5-氨基-1,10-菲罗啉", "cas": "54258-41-2", "spec": "5", "brand": "必得", "purity": "98", "code": "BD43363", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "PbBr2", "cas": "10031-22-8", "spec": "25", "brand": "Adamas", "purity": "99", "code": "10175A", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "烟酸", "cas": "55-22-1", "spec": "50", "brand": "艾康研选", "purity": "98", "code": "AK0035D0", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "2-吡啶甲酸", "cas": "98-98-6", "spec": "50", "brand": "艾康研选", "purity": "98", "code": "AK0035SO", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "La2O3", "cas": "1312-81-8", "spec": "25", "brand": "TCI", "purity": "99.9", "code": "L0235", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "Sc2O3", "cas": "12060-08-1", "spec": "5", "brand": "麦克林", "purity": "99", "code": "S824249", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "Gd2O3", "cas": "12064-62-9", "spec": "25", "brand": "麦克林", "purity": "99.9", "code": "G810408", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "钼酸钠二水合物", "cas": "10102-40-6", "spec": "100", "brand": "希恩思", "purity": "98", "code": "S-41180", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "KCl", "cas": "7447-40-7", "spec": "500", "brand": "希恩思", "purity": "99", "code": "P-74441", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "RbCl", "cas": "7791-11-9", "spec": "5", "brand": "希恩思", "purity": "99", "code": "R-56949", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "左旋酒石酸", "cas": "87-69-4", "spec": "100", "brand": "艾康研选", "purity": "99", "code": "AK00IEM6", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "右旋乳酸", "cas": "10326-41-7", "spec": "50", "brand": "艾康研选", "purity": "90", "code": "AK003PIN", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "右旋酒石酸", "cas": "147-71-7", "spec": "100", "brand": "艾康研选", "purity": "98", "code": "AK003PIP", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "D-扁桃酸", "cas": "611-71-2", "spec": "50", "brand": "艾康研选", "purity": "99", "code": "AK0032OT", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "S-扁桃酸", "cas": "17199-29-0", "spec": "25", "brand": "希恩思", "purity": "96", "code": "M-47110", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "左旋乳酸", "cas": "79-33-4", "spec": "100", "brand": "希恩思", "purity": "85", "code": "L-02000", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "D-苹果酸", "cas": "636-61-3", "spec": "25", "brand": "希恩思", "purity": "98", "code": "M-46120", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "L-苹果酸", "cas": "97-67-6", "spec": "25", "brand": "麦克林", "purity": "98", "code": "L813179", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "六水合偏钨酸铵", "cas": "11120-25-5", "spec": "25", "brand": "麦克林", "purity": "99", "code": "A792150", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "甲基二磺酸", "cas": "503-40-2", "spec": "100", "brand": "Adamas", "purity": "97", "code": "60442C", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "钼酸铵四水合物", "cas": "12054-85-2", "spec": "100", "brand": "希恩思", "purity": "99", "code": "A-12051", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "3,4-二氨基-3-环丁烯-1,2-二酮", "cas": "5231-89-0", "spec": "5", "brand": "希恩思", "purity": "98", "code": "D-0236360", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "苦参碱", "cas": "519-02-8", "spec": "5", "brand": "笛柏", "purity": "98", "code": "H441014", "loc": "冷藏", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "N,N-二甲基甲酰胺", "cas": "68-12-2", "spec": "500ml", "brand": "MREDA", "purity": "99.9", "code": "M175192-500ml", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "氨茶碱", "cas": "317-34-0", "spec": "25", "brand": "希恩思", "purity": "98", "code": "A-64200", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "烟酸", "cas": "59-67-6", "spec": "250", "brand": "艾康研选", "purity": "98", "code": "AK00EZS8", "loc": "", "qty": 5, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "3-氨基苯硼酸", "cas": "30418-59-8", "spec": "25", "brand": "笛柏", "purity": "98", "code": "K925500", "loc": "冷藏", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "氨基胍碳酸氢盐", "cas": "2582-30-1", "spec": "100", "brand": "麦克林", "purity": "98.5", "code": "A800907", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "甲基硼酸", "cas": "13061-96-6", "spec": "100", "brand": "麦克林", "purity": "97", "code": "M814126", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "氨甲基膦酸", "cas": "1066-51-9", "spec": "5", "brand": "Adamas", "purity": "99", "code": "13002B", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "甲基膦酸", "cas": "993-13-5", "spec": "5", "brand": "MREDA", "purity": "98", "code": "M219178-5g", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "1,3,5-苯三羧酸", "cas": "554-95-0", "spec": "250", "brand": "艾康研选", "purity": "99", "code": "AK003VE5", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "二甲双胍", "cas": "461-58-5", "spec": "100", "brand": "笛柏", "purity": "99", "code": "H270001", "loc": "", "qty": 2, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "SrCl2.6H2O", "cas": "10025-70-4", "spec": "100", "brand": "笛柏", "purity": "99.5", "code": "K757096", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "烟酰胺", "cas": "98-92-0", "spec": "100", "brand": "阿拉丁", "purity": "99", "code": "N105042-100g", "loc": "冷藏", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "4-氨基吡啶", "cas": "504-24-5", "spec": "100", "brand": "阿拉丁", "purity": "98", "code": "A113920-100g", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "BaCl2", "cas": "10361-37-2", "spec": "100", "brand": "阿拉丁", "purity": "99.5", "code": "A16592", "loc": "冷藏", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "SnF2", "cas": "7783-47-3", "spec": "100", "brand": "阿拉丁", "purity": "99", "code": "T195033-100g", "loc": "冷藏", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "SnCl2", "cas": "7772-99-8", "spec": "100", "brand": "阿拉丁", "purity": "99", "code": "T107617-100g", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "SbF3", "cas": "7783-56-4", "spec": "100", "brand": "阿拉丁", "purity": "98", "code": "A104483-100g", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "SbCl3", "cas": "10025-91-9", "spec": "100", "brand": "阿拉丁", "purity": "99", "code": "A112093-100g", "loc": "冷藏", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "NH4SCN", "cas": "1762-95-4", "spec": "500", "brand": "阿拉丁", "purity": "AR", "code": "A1126655-500g", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "(NH2)2SO2", "cas": "7803-58-9", "spec": "100", "brand": "阿拉丁", "purity": "99", "code": "S123022-100g", "loc": "冷藏", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "HBr", "cas": "10035-10-6", "spec": "500ml", "brand": "阿拉丁", "purity": "0.4", "code": "H116385-500ml", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "KSCN", "cas": "333-20-0", "spec": "100", "brand": "笛柏", "purity": "99", "code": "K218005", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "2-巯基吡啶", "cas": "2637-34-5", "spec": "100", "brand": "Adamas", "purity": "97", "code": "42996l", "loc": "冷藏", "qty": 2, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "2-甲脒基乙酰胺盐酸盐", "cas": "34570-17-7", "spec": "25", "brand": "阿拉丁", "purity": "98", "code": "A136566-25g", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "HBF4", "cas": "16872-11-0", "spec": "500", "brand": "阿拉丁", "purity": "0.5", "code": "T110577-500g", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "亚磷酸", "cas": "13598-36-2", "spec": "500", "brand": "阿拉丁", "purity": "99", "code": "P102924-500G", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "甲酸", "cas": "64-18-6", "spec": "500ml", "brand": "阿拉丁", "purity": "0.88", "code": "F112032-500ml", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "氨基磺酸", "cas": "5329-14-6", "spec": "500g", "brand": "阿拉丁", "purity": "99.5", "code": "S103529-500g", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "CaCO3", "cas": "471-34-1", "spec": "100", "brand": "阿拉丁", "purity": "99", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "H3BO3", "cas": "10043-35-3", "spec": "1000", "brand": "阿拉丁", "purity": "99.5", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "SeO2", "cas": "7446-08-4", "spec": "25", "brand": "阿拉丁", "purity": "99", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "GuCO3", "cas": "593-85-1", "spec": "100", "brand": "阿拉丁", "purity": "99", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "Biuret", "cas": "108-19-0", "spec": "100", "brand": "阿拉丁", "purity": "98", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "甘氨酸", "cas": "56-40-6", "spec": "100", "brand": "阿拉丁", "purity": "99", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "脒基硫脲", "cas": "2114-02-5", "spec": "100", "brand": "阿拉丁", "purity": "98", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "次磷酸", "cas": "6303-21-5", "spec": "250", "brand": "阿拉丁", "purity": "0.5", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "Ta2O5", "cas": "1314-61-0", "spec": "25", "brand": "笛柏", "purity": "99.5", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "K2C2O4.H2O", "cas": "6487-48-5", "spec": "100", "brand": "笛柏", "purity": "99", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "甲烷磺酸", "cas": "75-75-2", "spec": "500ml", "brand": "麦克林", "purity": "0.7", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "ZnCl2", "cas": "7646-85-7", "spec": "100g", "brand": "麦克林", "purity": "98", "code": "冷藏", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "甲基硼酸", "cas": "13061-96-6", "spec": "25", "brand": "麦克林", "purity": "97", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "二氰二胺", "cas": "461-58-5", "spec": "250", "brand": "麦克林", "purity": "98", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "Nb2O5", "cas": "1313-96-8", "spec": "100", "brand": "麦克林", "purity": "99.9", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "LiCl", "cas": "7447-41-8", "spec": "100", "brand": "麦克林", "purity": "99", "code": "冷藏", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "ZnBr2", "cas": "7699-45-8", "spec": "100", "brand": "麦克林", "purity": "99", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "丙二酸", "cas": "141-82-2", "spec": "1000", "brand": "麦克林", "purity": "98", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "甲基硼酸", "cas": "13061-96-6", "spec": "100", "brand": "麦克林", "purity": "98", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "HIO3", "cas": "7782-68-5", "spec": "100", "brand": "麦克林", "purity": "99", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "3-氰基苯硼酸", "cas": "150255-96-2", "spec": "25", "brand": "麦克林", "purity": "96", "code": "冷藏", "loc": "", "qty": 3, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "3-羧基苯硼酸", "cas": "25487-66-5", "spec": "100", "brand": "麦克林", "purity": "98", "code": "冷藏", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "SrCO3", "cas": "1633-05-2", "spec": "100", "brand": "麦克林", "purity": "99", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "2-氨基胞嘧啶", "cas": "109-12-6", "spec": "100", "brand": "麦克林", "purity": "98", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "Li2CO3", "cas": "554-13-2", "spec": "100", "brand": "麦克林", "purity": "99", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "四丁基溴化铵", "cas": "1643-19-2", "spec": "100", "brand": "麦克林", "purity": "98", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "CdCl2.2.5H2O", "cas": "7790-78-5", "spec": "100", "brand": "麦克林", "purity": "98", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "BaCO3", "cas": "513-77-9", "spec": "500", "brand": "麦克林", "purity": "99", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "4HP", "cas": "626-64-2", "spec": "100", "brand": "麦克林", "purity": "97", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "Al(NO3)3.9H2O", "cas": "7784-27-2", "spec": "500", "brand": "麦克林", "purity": "98", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "丙二酸", "cas": "141-82-2", "spec": "1000", "brand": "麦克林", "purity": "99", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "SbCl3", "cas": "10025-91-9", "spec": "25", "brand": "MREDA", "purity": "99", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "MgCO3", "cas": "546-93-0", "spec": "100", "brand": "凯为化学", "purity": "40-47%", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "乙腈", "cas": "75-05-8", "spec": "500ml", "brand": "安耐吉", "purity": "99.96", "code": "冷藏", "loc": "", "qty": 2, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "乙酸镉二水合物", "cas": "5743-04-4", "spec": "25", "brand": "毕得医药", "purity": "99", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "KI", "cas": "7681-11-0", "spec": "25", "brand": "毕得医药", "purity": "99", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "二水乙酸锌", "cas": "5970-45-6", "spec": "100", "brand": "毕得医药", "purity": "99", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "3,6-二(吡啶-2-基)哒嗪", "cas": "36901-11-8", "spec": "1", "brand": "麦克林", "purity": "95", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "3,6-二(2-吡啶基)-1,2,4,5-四嗪", "cas": "1671-87-0", "spec": "25", "brand": "毕得医药", "purity": "97", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "方酸", "cas": "2892-51-5", "spec": "5", "brand": "毕得医药", "purity": "98", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "ZnSO4.7H2O", "cas": "7446-20-0", "spec": "100", "brand": "毕得医药", "purity": "99", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}, {"cat": "", "name": "ZnI2", "cas": "10139-47-6", "spec": "25", "brand": "毕得医药", "purity": "98", "code": "", "loc": "", "qty": 1, "mw": "", "solubility": "", "toxicity": "", "notes": ""}]</script>
+<script>
+const rawData = JSON.parse(document.getElementById('rawData').textContent);
+const data = rawData.map((item, idx) => ({ ...item, _id: idx + 1 }));
+let currentFilter = 'all', lowOnly = false, sortField = null, sortDir = 1, searchQuery = '';
+const cols = [
+  { key: '_id', label: '#', w: '40px' },
+  { key: 'name', label: '名称' },
+  { key: 'cas', label: 'CAS号', w: '130px' },
+  { key: 'spec', label: '规格', w: '80px' },
+  { key: 'brand', label: '厂家', w: '80px' },
+  { key: 'purity', label: '纯度', w: '70px' },
+  { key: 'code', label: '货号', w: '120px' },
+  { key: 'loc', label: '位置', w: '70px' },
+  { key: 'qty', label: '数量', w: '60px' },
+  { key: 'mw', label: '分子量', w: '80px' },
+  { key: 'solubility', label: '溶解情况' },
+  { key: 'toxicity', label: '毒性' },
+  { key: 'notes', label: '备注' }
+];
+
+function getItems() {
+  let items = [...data];
+  if (currentFilter !== 'all') items = items.filter(i => i.cat === currentFilter);
+  if (lowOnly) items = items.filter(i => i.qty <= 2);
+  let q = searchQuery.trim().toLowerCase();
+  if (q) items = items.filter(i => (i.name+' '+i.cas+' '+i.brand+' '+i.code+' '+i.loc+' '+i.solubility+' '+i.notes).toLowerCase().includes(q));
+  if (sortField) items.sort((a,b) => { let va=a[sortField], vb=b[sortField]; if(typeof va==='string') va=va.toLowerCase(); if(typeof vb==='string') vb=vb.toLowerCase(); return va<vb ? -1*sortDir : va>vb ? 1*sortDir : 0; });
+  return items;
+}
+
+function render() {
+  const items = getItems();
+  document.getElementById('resultCount').textContent = `共 ${items.length} / ${data.length} 条记录`;
+  const low = data.filter(i => i.qty <= 2).length;
+  const zero = data.filter(i => i.qty === 0).length;
+  document.getElementById('statsBar').innerHTML =
+    `<div class="stat-card"><div class="num">${data.length}</div><div class="label">总试剂数</div></div>
+     <div class="stat-card"><div class="num">${data.reduce((s,i) => s + (typeof i.qty === 'number' ? i.qty : 0), 0)}</div><div class="label">总数量</div></div>
+     <div class="stat-card"><div class="num" style="color:#d4ac0d;">${low}</div><div class="label">库存不足(≤2)</div></div>
+     <div class="stat-card"><div class="num" style="color:#e74c3c;">${zero}</div><div class="label">已用完(=0)</div></div>`;
+  if (items.length === 0) { document.getElementById('tableContainer').innerHTML = '<div class="no-result">😕 没有匹配的记录</div>'; return; }
+  let html = '<table><thead><tr>';
+  cols.forEach(c => {
+    const s = sortField === c.key;
+    html += `<th class="${s?'sorted':''}" onclick="sortBy('${c.key}')" ${c.w?'style="width:'+c.w+'"':''}>${c.label}<span class="sort-arrow">${s?(sortDir===1?'▲':'▼'):'▽'}</span></th>`;
+  });
+  html += '</tr></thead><tbody>';
+  items.forEach(item => {
+    html += `<tr class="${item.qty<=2?'low':''}">`;
+    cols.forEach(c => {
+      let val = item[c.key];
+      if (c.key === 'qty') {
+        if (val <= 0) html += '<td><span class="badge badge-low">0</span></td>';
+        else if (val <= 2) html += '<td><span class="badge badge-warn">'+val+'</span></td>';
+        else html += '<td><span class="badge badge-ok">'+val+'</span></td>';
+      } else if (c.key === 'loc' && val) {
+        html += '<td><span class="loc-badge">'+val+'</span></td>';
+      } else {
+        html += '<td>'+(val||'')+'</td>';
+      }
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  document.getElementById('tableContainer').innerHTML = html;
+}
+
+function sortBy(field) { if (sortField === field) { sortDir *= -1; } else { sortField = field; sortDir = 1; } render(); }
+function filterCat(cat, el) { currentFilter = cat; lowOnly = false; document.querySelectorAll('.controls .tag').forEach(t => t.classList.remove('active')); if(el) el.classList.add('active'); document.getElementById('lowBtn').style.background = '#fff'; render(); }
+function filterLow() { lowOnly = !lowOnly; document.getElementById('lowBtn').style.background = lowOnly ? '#fee' : '#fff'; if(lowOnly){ currentFilter='all'; document.querySelectorAll('.controls .tag').forEach(t=>t.classList.remove('active')); document.querySelector('.controls .tag').classList.add('active'); } render(); }
+document.getElementById('searchInput').addEventListener('input', function() { searchQuery = this.value; render(); });
+document.addEventListener('keydown', function(e) { if(e.ctrlKey&&e.key==='k'){ e.preventDefault(); document.getElementById('searchInput').focus(); } if(e.key==='Escape'){ document.getElementById('searchInput').value=''; searchQuery=''; render(); } });
+render();
+</script>
+</body>
+</html>
