@@ -74,9 +74,53 @@
   details summary { cursor: pointer; color: var(--primary-light); font-weight: 500; padding: 4px 0; }
   details .steps { margin-top: 8px; padding: 12px 16px; background: #f8fafb; border-radius: 8px; font-size: 0.9em; }
   .emoji-icon { font-size: 1.3em; }
+
+  /* Password gate */
+  .pwd-overlay {
+    position: fixed; inset: 0; z-index: 99999;
+    background: linear-gradient(135deg, #1a5276, #2980b9);
+    display: flex; align-items: center; justify-content: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Microsoft YaHei", sans-serif;
+  }
+  .pwd-overlay.hidden { display: none !important; }
+  .pwd-box {
+    background: #fff; border-radius: 20px; padding: 48px 40px 40px;
+    text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    max-width: 380px; width: 90%;
+  }
+  .pwd-box .icon { font-size: 3em; margin-bottom: 12px; }
+  .pwd-box h2 { color: #1a5276; margin-bottom: 6px; font-size: 1.3em; }
+  .pwd-box p.sub { color: #7f8c8d; margin-bottom: 24px; font-size: 0.9em; }
+  .pwd-box input[type="password"] {
+    width: 100%; padding: 12px 16px; border: 2px solid #e0e4e8; border-radius: 10px;
+    font-size: 1em; outline: none; transition: border 0.2s; box-sizing: border-box;
+  }
+  .pwd-box input[type="password"]:focus { border-color: #2980b9; }
+  .pwd-box .error { color: #e74c3c; font-size: 0.85em; margin-top: 8px; min-height: 1.5em; }
+  .pwd-box button {
+    width: 100%; margin-top: 14px; padding: 12px; background: #2980b9; color: #fff;
+    border: none; border-radius: 10px; font-size: 1em; cursor: pointer; font-weight: 600;
+    transition: background 0.2s;
+  }
+  .pwd-box button:hover { background: #1a5276; }
+  .pwd-box .footer-text { color: #bdc3c7; font-size: 0.78em; margin-top: 20px; }
+
 </style>
 </head>
 <body>
+
+<div id="pwdOverlay" class="pwd-overlay">
+  <div class="pwd-box">
+    <div class="icon">🔒</div>
+    <h2>访问受限</h2>
+    <p class="sub">请输入访问密码</p>
+    <input type="password" id="pwdInput" placeholder="请输入密码" autofocus>
+    <div class="error" id="pwdError"></div>
+    <button onclick="verifyPassword()">确认</button>
+    <div class="footer-text">材化学院 · 内部使用</div>
+  </div>
+</div>
+
 
 <div class="header">
   <h1>💰 皖西学院财务报销助手</h1>
@@ -739,6 +783,50 @@ document.addEventListener('keydown', e => {
 
 // Initial render
 doSearch();
+</script>
+
+
+<script>
+(function() {
+  const PWD_HASH = "211ca52ac11849ff8a2d2d7b919b2d985b6dbb781fcaa444b3d506d81baf8f41";
+  const SESSION_KEY = "wxc_auth_v1";
+
+  async function sha256(str) {
+    const buf = new TextEncoder().encode(str);
+    const hash = await crypto.subtle.digest('SHA-256', buf);
+    return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  async function checkAuth() {
+    if (localStorage.getItem(SESSION_KEY) === '1') {
+      document.getElementById('pwdOverlay').classList.add('hidden');
+      return;
+    }
+    document.getElementById('pwdOverlay').classList.remove('hidden');
+  }
+
+  window.verifyPassword = async function() {
+    const input = document.getElementById('pwdInput');
+    const err = document.getElementById('pwdError');
+    const hash = await sha256(input.value);
+    if (hash === PWD_HASH) {
+      localStorage.setItem(SESSION_KEY, '1');
+      document.getElementById('pwdOverlay').classList.add('hidden');
+      err.textContent = '';
+    } else {
+      err.textContent = '密码错误，请重试';
+      input.value = '';
+      input.focus();
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded', function() {
+    checkAuth();
+    document.getElementById('pwdInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') window.verifyPassword();
+    });
+  });
+})();
 </script>
 
 </body>
