@@ -5,369 +5,369 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>李洋 · 学术主页</title>
 <style>
-  :root {
-    --bg: #f8f9fa;
-    --card: #fff;
-    --text: #2c3e50;
-    --muted: #6c757d;
-    --primary: #1a5276;
-    --primary-light: #2980b9;
-    --accent: #27ae60;
-    --border: #e9ecef;
-    --shadow: 0 1px 6px rgba(0,0,0,0.06);
-  }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family: -apple-system, "Microsoft YaHei", "PingFang SC", sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+ :root {
+  --bg: #f8f9fa;
+  --card: #fff;
+  --text: #2c3e50;
+  --muted: #6c757d;
+  --primary: #1a5276;
+  --primary-light: #2980b9;
+  --accent: #27ae60;
+  --border: #e9ecef;
+  --shadow: 0 1px 6px rgba(0,0,0,0.06);
+ }
+ * { margin:0; padding:0; box-sizing:border-box; }
+ body { font-family: -apple-system, "Microsoft YaHei", "PingFang SC", sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
 
-  /* Nav */
-  .nav { background: var(--primary); color: #fff; padding: 0 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-  .nav-inner { max-width: 1000px; margin: 0 auto; display: flex; align-items: center; gap: 20px; overflow-x: auto; }
-  .nav a { color: rgba(255,255,255,0.85); text-decoration: none; padding: 14px 6px; font-size: 0.88em; white-space: nowrap; border-bottom: 2px solid transparent; transition: all 0.2s; }
-  .nav a:hover, .nav a.active { color: #fff; border-bottom-color: #fff; }
-  .nav .brand { font-weight: 700; font-size: 1em; color: #fff; margin-right: auto; }
+ /* Nav */
+ .nav { background: var(--primary); color: #fff; padding: 0 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+ .nav-inner { max-width: 1000px; margin: 0 auto; display: flex; align-items: center; gap: 20px; overflow-x: auto; }
+ .nav a { color: rgba(255,255,255,0.85); text-decoration: none; padding: 14px 6px; font-size: 0.88em; white-space: nowrap; border-bottom: 2px solid transparent; transition: all 0.2s; }
+ .nav a:hover, .nav a.active { color: #fff; border-bottom-color: #fff; }
+ .nav .brand { font-weight: 700; font-size: 1em; color: #fff; margin-right: auto; }
 
-  .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+ .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
 
-  /* Profile */
-  .profile { background: var(--card); border-radius: 16px; margin: 24px 0; padding: 32px 36px; box-shadow: var(--shadow); display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap; }
-  .profile-avatar { width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--primary-light)); display: flex; align-items: center; justify-content: center; font-size: 3em; color: #fff; flex-shrink: 0; }
-  .profile-info { flex: 1; min-width: 250px; }
-  .profile-info h1 { font-size: 1.7em; color: var(--primary); margin-bottom: 2px; }
-  .profile-info .affil { color: var(--muted); font-size: 0.95em; margin-bottom: 6px; }
-  .profile-info .tagline { font-size: 0.9em; color: var(--muted); margin-bottom: 8px; line-height: 1.6; }
-  .profile-info .contact-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-  .profile-info .contact-row a { display: inline-flex; align-items: center; gap: 4px; padding: 4px 12px; border-radius: 6px; background: #eaf2f8; color: var(--primary); font-size: 0.82em; text-decoration: none; transition: all 0.15s; }
-  .profile-info .contact-row a:hover { background: var(--primary); color: #fff; }
+ /* Profile */
+ .profile { background: var(--card); border-radius: 16px; margin: 24px 0; padding: 32px 36px; box-shadow: var(--shadow); display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap; }
+ .profile-avatar { width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--primary-light)); display: flex; align-items: center; justify-content: center; font-size: 3em; color: #fff; flex-shrink: 0; }
+ .profile-info { flex: 1; min-width: 250px; }
+ .profile-info h1 { font-size: 1.7em; color: var(--primary); margin-bottom: 2px; }
+ .profile-info .affil { color: var(--muted); font-size: 0.95em; margin-bottom: 6px; }
+ .profile-info .tagline { font-size: 0.9em; color: var(--muted); margin-bottom: 8px; line-height: 1.6; }
+ .profile-info .contact-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+ .profile-info .contact-row a { display: inline-flex; align-items: center; gap: 4px; padding: 4px 12px; border-radius: 6px; background: #eaf2f8; color: var(--primary); font-size: 0.82em; text-decoration: none; transition: all 0.15s; }
+ .profile-info .contact-row a:hover { background: var(--primary); color: #fff; }
 
-  /* Sections */
-  .section { background: var(--card); border-radius: 16px; margin-bottom: 20px; padding: 28px 32px; box-shadow: var(--shadow); }
-  .section h2 { font-size: 1.3em; color: var(--primary); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--border); display: flex; align-items: center; gap: 8px; }
+ /* Sections */
+ .section { background: var(--card); border-radius: 16px; margin-bottom: 20px; padding: 28px 32px; box-shadow: var(--shadow); }
+ .section h2 { font-size: 1.3em; color: var(--primary); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--border); display: flex; align-items: center; gap: 8px; }
 
-  /* Timeline */
-  .timeline { position: relative; padding-left: 24px; }
-  .timeline::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 2px; background: var(--border); }
-  .tl-item { position: relative; margin-bottom: 20px; padding-left: 16px; }
-  .tl-item::before { content: ''; position: absolute; left: -20px; top: 8px; width: 10px; height: 10px; border-radius: 50%; background: var(--primary-light); border: 2px solid var(--card); }
-  .tl-item .date { font-size: 0.82em; color: var(--primary-light); font-weight: 600; }
-  .tl-item .title { font-weight: 600; }
-  .tl-item .desc { font-size: 0.88em; color: var(--muted); }
+ /* Timeline */
+ .timeline { position: relative; padding-left: 24px; }
+ .timeline::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 2px; background: var(--border); }
+ .tl-item { position: relative; margin-bottom: 20px; padding-left: 16px; }
+ .tl-item::before { content: ''; position: absolute; left: -20px; top: 8px; width: 10px; height: 10px; border-radius: 50%; background: var(--primary-light); border: 2px solid var(--card); }
+ .tl-item .date { font-size: 0.82em; color: var(--primary-light); font-weight: 600; }
+ .tl-item .title { font-weight: 600; }
+ .tl-item .desc { font-size: 0.88em; color: var(--muted); }
 
-  /* Publications */
-  .pub { padding: 14px 0; border-bottom: 1px solid var(--border); font-size: 0.92em; }
-  .pub:last-child { border-bottom: none; }
-  .pub .authors { color: var(--muted); }
-  .pub .highlight { background: #fff3cd; padding: 0 2px; font-weight: 600; }
-  .pub .journal { color: var(--primary-light); font-style: italic; }
-  .pub .badge { display: inline-block; font-size: 0.72em; padding: 1px 8px; border-radius: 10px; margin-left: 4px; font-weight: 600; }
-  .badge-top { background: #e8f8e8; color: #27ae60; }
-  .badge-hot { background: #fef9e7; color: #d4ac0d; }
-  .badge-vip { background: #fdedec; color: #e74c3c; }
-  .badge-cover { background: #eaf2f8; color: #2980b9; }
-  .pub-links { margin-top: 4px; }
-  .pub-links a { display: inline-block; font-size: 0.78em; padding: 2px 10px; border-radius: 4px; background: #f0f2f5; color: var(--primary); text-decoration: none; margin-right: 4px; }
-  .pub-links a:hover { background: var(--primary); color: #fff; }
+ /* Publications */
+ .pub { padding: 14px 0; border-bottom: 1px solid var(--border); font-size: 0.92em; }
+ .pub:last-child { border-bottom: none; }
+ .pub .authors { color: var(--muted); }
+ .pub .highlight { background: #fff3cd; padding: 0 2px; font-weight: 600; }
+ .pub .journal { color: var(--primary-light); font-style: italic; }
+ .pub .badge { display: inline-block; font-size: 0.72em; padding: 1px 8px; border-radius: 10px; margin-left: 4px; font-weight: 600; }
+ .badge-top { background: #e8f8e8; color: #27ae60; }
+ .badge-hot { background: #fef9e7; color: #d4ac0d; }
+ .badge-vip { background: #fdedec; color: #e74c3c; }
+ .badge-cover { background: #eaf2f8; color: #2980b9; }
+ .pub-links { margin-top: 4px; }
+ .pub-links a { display: inline-block; font-size: 0.78em; padding: 2px 10px; border-radius: 4px; background: #f0f2f5; color: var(--primary); text-decoration: none; margin-right: 4px; }
+ .pub-links a:hover { background: var(--primary); color: #fff; }
 
-  /* Awards */
-  .award { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.92em; }
-  .award:last-child { border-bottom: none; }
-  .award .date { color: var(--primary-light); font-weight: 600; white-space: nowrap; min-width: 80px; }
-  .award .prize { flex: 1; }
+ /* Awards */
+ .award { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.92em; }
+ .award:last-child { border-bottom: none; }
+ .award .date { color: var(--primary-light); font-weight: 600; white-space: nowrap; min-width: 80px; }
+ .award .prize { flex: 1; }
 
-  /* Skills */
-  .skill-group { margin-bottom: 12px; }
-  .skill-group .label { font-weight: 600; color: var(--primary); font-size: 0.9em; }
-  .skill-group .items { font-size: 0.9em; color: var(--muted); }
+ /* Skills */
+ .skill-group { margin-bottom: 12px; }
+ .skill-group .label { font-weight: 600; color: var(--primary); font-size: 0.9em; }
+ .skill-group .items { font-size: 0.9em; color: var(--muted); }
 
-  /* Conferences */
-  .conf { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.92em; }
-  .conf:last-child { border-bottom: none; }
-  .conf .date { color: var(--primary-light); font-weight: 600; }
+ /* Conferences */
+ .conf { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.92em; }
+ .conf:last-child { border-bottom: none; }
+ .conf .date { color: var(--primary-light); font-weight: 600; }
 
-  /* Footer */
-  .footer { text-align: center; padding: 24px; color: var(--muted); font-size: 0.82em; }
+ /* Footer */
+ .footer { text-align: center; padding: 24px; color: var(--muted); font-size: 0.82em; }
 
-  /* Toggle subsections */
-  .sub-toggle { cursor: pointer; color: var(--primary-light); font-size: 0.85em; user-select: none; margin: 8px 0 4px; display: inline-block; }
-  .sub-toggle:hover { text-decoration: underline; }
-  .sub-content { display: none; }
-  .sub-content.open { display: block; }
+ /* Toggle subsections */
+ .sub-toggle { cursor: pointer; color: var(--primary-light); font-size: 0.85em; user-select: none; margin: 8px 0 4px; display: inline-block; }
+ .sub-toggle:hover { text-decoration: underline; }
+ .sub-content { display: none; }
+ .sub-content.open { display: block; }
 
-  @media (max-width: 768px) {
-    .profile { padding: 20px; flex-direction: column; align-items: center; text-align: center; }
-    .profile-info .contact-row { justify-content: center; }
-    .section { padding: 20px; }
-    .award { flex-direction: column; gap: 2px; }
-  }
+ @media (max-width: 768px) {
+  .profile { padding: 20px; flex-direction: column; align-items: center; text-align: center; }
+  .profile-info .contact-row { justify-content: center; }
+  .section { padding: 20px; }
+  .award { flex-direction: column; gap: 2px; }
+ }
 </style>
 </head>
 <body>
 
 <div class="nav">
-  <div class="nav-inner">
-    <span class="brand">🧪 李洋 · 学术主页</span>
-    <a href="#profile">简介</a>
-    <a href="#education">科研</a>
-    <a href="#publications">论文</a>
-    <a href="#awards">荣誉</a>
-    <a href="#conferences">会议</a>
-    <a href="/">← 首页</a>
-  </div>
+ <div class="nav-inner">
+  <span class="brand">🧪 李洋 · 学术主页</span>
+  <a href="#profile">简介</a>
+  <a href="#education">科研</a>
+  <a href="#publications">论文</a>
+  <a href="#awards">荣誉</a>
+  <a href="#conferences">会议</a>
+  <a href="/">← 首页</a>
+ </div>
 </div>
 
 <div class="container">
 
-  <!-- Profile -->
-  <div id="profile" class="profile">
-    <div class="profile-avatar">🧑‍🔬</div>
-    <div class="profile-info">
-      <h1>李洋</h1>
-      <div class="affil">皖西学院 · 材化学院</div>
-      <div class="tagline">
-        研究方向：双折射晶体与非线性光学晶体的设计、生长与理论计算
-      </div>
-      <div class="contact-row">
-        <a href="mailto:lycrystal@wxc.edu.cn">📧 lycrystal@wxc.edu.cn</a>
-        <a href="https://orcid.org/0000-0002-5741-1711" target="_blank">🔗 ORCID: 0000-0002-5741-1711</a>
-      </div>
-    </div>
+ <!-- Profile -->
+ <div id="profile" class="profile">
+  <div class="profile-avatar">🧑‍🔬</div>
+  <div class="profile-info">
+   <h1>李洋</h1>
+   <div class="affil">皖西学院 · 材化学院</div>
+   <div class="tagline">
+    研究方向：双折射晶体与非线性光学晶体的设计、生长与理论计算
+   </div>
+   <div class="contact-row">
+    <a href="mailto:lycrystal@wxc.edu.cn">📧 lycrystal@wxc.edu.cn</a>
+    <a href="https://orcid.org/0000-0002-5741-1711" target="_blank">🔗 ORCID: 0000-0002-5741-1711</a>
+   </div>
+  </div>
+ </div>
+
+ <!-- Education -->
+ <div id="education" class="section">
+  <h2>🔬 科研经历</h2>
+  <div class="timeline">
+   <div class="tl-item">
+    <div class="date">2021.03 – 2025.02</div>
+    <div class="title">Sogang University · Center for Noncentrosymmetric Materials</div>
+    <div class="desc">Supervisor: Prof. Kang Min Ok</div>
+   </div>
+   <div class="tl-item">
+    <div class="date">2016.04 – 2021.01</div>
+    <div class="title">新疆理化技术研究所 · 晶体材料研究中心</div>
+    <div class="desc">导师：潘世烈研究员、张方方研究员</div>
+   </div>
+  </div>
+ </div>
+
+ <!-- Publications -->
+ <div id="publications" class="section">
+  <h2>📝 学术论文</h2>
+  <p style="font-size:0.85em;color:var(--muted);margin-bottom:12px;">共发表 20+ 篇学术论文，其中第一作者/共同第一作者论文 14 篇。标注 <span class="badge badge-top">一区TOP</span> 为中科院一区TOP期刊。</p>
+
+  <div class="pub">
+   <div><span class="authors"><b><u>Y. Li</u></b><sup>+</sup>, C. Jin<sup>+</sup>, K. M. Ok</span></div>
+   <div>"Peroxide-Assisted Solvate Engineering Enables Record-High Birefringence in a Solar-Blind Transparent Crystal"</div>
+   <div><span class="journal">Angew. Chem. Int. Ed.</span> 2026, e2031892 <span class="badge badge-top">一区TOP</span> <span class="badge badge-hot">Hot Paper</span></div>
   </div>
 
-  <!-- Education -->
-  <div id="education" class="section">
-    <h2>🔬 科研经历</h2>
-    <div class="timeline">
-      <div class="tl-item">
-        <div class="date">2021.03 – 2025.02</div>
-        <div class="title">Sogang University · Center for Noncentrosymmetric Materials</div>
-        <div class="desc">Supervisor: Prof. Kang Min Ok</div>
-      </div>
-      <div class="tl-item">
-        <div class="date">2016.04 – 2021.01</div>
-        <div class="title">新疆理化技术研究所·晶体材料研究中心</div>
-        <div class="desc">导师：潘世烈研究员、张方方研究员</div>
-      </div>
-    </div>
+  <div class="pub">
+   <div><span class="authors"><b><u>Y. Li</u></b>, K. M. Ok</span></div>
+   <div>"Breaking Boundaries: Giant Ultraviolet Birefringence in Dimension-Reduced Zn-Based Crystals"</div>
+   <div><span class="journal">Angew. Chem. Int. Ed.</span> 2024, e202409336 <span class="badge badge-top">一区TOP</span> <span class="badge badge-hot">Hot Paper</span></div>
   </div>
 
-  <!-- Publications -->
-  <div id="publications" class="section">
-    <h2>📝 学术论文</h2>
-    <p style="font-size:0.85em;color:var(--muted);margin-bottom:12px;">共发表 20+ 篇学术论文，其中第一作者/共同第一作者论文 14 篇。标注 <span class="badge badge-top">一区TOP</span> 为中科院一区TOP期刊。</p>
-
-    <div class="pub">
-      <div><span class="authors"><b><u>Y. Li</u></b>+, C. Jin+, K. M. Ok</span></div>
-      <div>"Peroxide-Assisted Solvate Engineering Enables Record-High Birefringence in a Solar-Blind Transparent Crystal"</div>
-      <div><span class="journal">Angew. Chem. Int. Ed.</span> 2026, e2031892 <span class="badge badge-top">一区TOP</span> <span class="badge badge-hot">Hot Paper</span></div>
-    </div>
-
-    <div class="pub">
-      <div><span class="authors"><b><u>Y. Li</u></b>, K. M. Ok</span></div>
-      <div>"Breaking Boundaries: Giant Ultraviolet Birefringence in Dimension-Reduced Zn-Based Crystals"</div>
-      <div><span class="journal">Angew. Chem. Int. Ed.</span> 2024, e202409336 <span class="badge badge-top">一区TOP</span> <span class="badge badge-hot">Hot Paper</span></div>
-    </div>
-
-    <div class="pub">
-      <div><span class="authors"><b><u>Y. Li</u></b>, K. M. Ok</span></div>
-      <div>"Crystal Clear: Unveiling Giant Birefringence in Organic-Inorganic Cocrystals"</div>
-      <div><span class="journal">Chem. Sci.</span> 2024, 15, 10193-10199 <span class="badge badge-top">一区TOP</span></div>
-    </div>
-
-    <div class="pub">
-      <div><span class="authors"><b><u>Y. Li</u></b>, X. Chen, K. M. Ok</span></div>
-      <div>"Strategically Designed Metal-Free Deep-Ultraviolet Birefringent Crystals with Superior Optical Properties"</div>
-      <div><span class="journal">Chem. Sci.</span> 2024, 15, 15145-15151 <span class="badge badge-top">一区TOP</span></div>
-    </div>
-
-    <div class="pub">
-      <div><span class="authors">C. Jin+, <b><u>Y. Li</u></b>+, C. Chen, et al.</span></div>
-      <div>"From Coplanarity to Coaxiality: A Linearity-Oriented Design Paradigm for Ultrahigh Ultraviolet Birefringent Inorganic Crystals"</div>
-      <div><span class="journal">J. Am. Chem. Soc.</span> 2026, 148, 19301-19310 <span class="badge badge-top">一区TOP</span></div>
-    </div>
-
-    <div class="pub">
-      <div><span class="authors">C. Jin+, <b><u>Y. Li</u></b>+, C. Chen, et al.</span></div>
-      <div>"Sulfonated Module Aggregation for Ultrahigh Birefringence in Aqueous-Processable Crystals"</div>
-      <div><span class="journal">J. Am. Chem. Soc.</span> 2025, 147, 39964-39973 <span class="badge badge-top">一区TOP</span></div>
-    </div>
-
-    <div class="pub">
-      <div><span class="authors">C. Jin+, <b><u>Y. Li</u></b>+, J. Kim, et al.</span></div>
-      <div>"Exceptional Second Harmonic Generation in Ultraviolet Nonlinear Optical Oxyfluoroniobate Crystals"</div>
-      <div><span class="journal">Angew. Chem. Int. Ed.</span> 2025, e202512618 <span class="badge badge-top">一区TOP</span> <span class="badge badge-vip">Very Important Paper</span></div>
-    </div>
-
-    <div class="pub">
-      <div><span class="authors">X. Wang+, <b><u>Y. Li</u></b>+, Z. Chen, et al.</span></div>
-      <div>"Sr(NO₃)(NH₂SO₃)·H₂O: First Nitrate Sulfamate Revealing Remarkable Second-Harmonic Generation and Optimized Birefringence"</div>
-      <div><span class="journal">Small Struct.</span> 2023, 2300274 <span class="badge" style="background:#e8f8f0;color:#27ae60;">二区</span></div>
-    </div>
-
-    <div class="pub">
-      <div><span class="authors"><b><u>Y. Li</u></b>, K. M. Ok</span></div>
-      <div>"Mg(H₂O)₆[(IO₂(OH))₂(IO₃)]₂: A New Iodate with A Very Large Band Gap and Optical Anisotropy"</div>
-      <div><span class="journal">J. Mater. Chem. C</span> 2022, 10, 8776–8782 <span class="badge" style="background:#e8f8f0;color:#27ae60;">二区TOP</span></div>
-    </div>
-
-    <div class="pub">
-      <div><span class="authors"><b><u>Y. Li</u></b>, X. Chen, K. M. Ok</span></div>
-      <div>"KF·B(OH)₃: a KBBF-Type Material with Large Birefringence and Remarkable Deep-Ultraviolet Transparency"</div>
-      <div><span class="journal">Chem. Commun.</span> 2022, 58, 8770-8773 <span class="badge" style="background:#e8f8f0;color:#27ae60;">二区TOP</span> <span class="badge badge-cover">Inside Front Cover</span></div>
-    </div>
-
-    <div class="pub">
-      <div><span class="authors"><b><u>Y. Li</u></b>, J. Huang, H. Chen</span></div>
-      <div>"Crystal Growth, Characterization and Theoretical Studies of The Noncentrosymmetric Compound Al₃(IO₃)₉·(HIO₃)₆·18H₂O"</div>
-      <div><span class="journal">J. Alloys Compd.</span> 2021, 856, 157852 <span class="badge" style="background:#e8f8f0;color:#27ae60;">二区TOP</span></div>
-    </div>
-
-    <div class="pub">
-      <div><span class="authors"><b><u>Y. Li</u></b>, K. M. Ok</span></div>
-      <div>"Crystal Growth of K₂HCO₃F·H₂O with a Very Short Cutoff Edge and Large Birefringence"</div>
-      <div><span class="journal">Cryst. Growth Des.</span> 2022, 22, 5639–5644 <span class="badge" style="background:#e8f8f0;color:#27ae60;">二区</span></div>
-    </div>
-
-    <div class="pub">
-      <div><span class="authors"><b><u>Y. Li</u></b>, J. Lee, K. M. Ok</span></div>
-      <div>"Designed Metal-Free Quasi-1D Crystals with Giant Birefringence"</div>
-      <div><span class="journal">Chem-Eur J.</span> 2025, e202500849 <span class="badge" style="background:#fef9e7;color:#d4ac0d;">三区</span></div>
-    </div>
-
-    <div class="pub">
-      <div><span class="authors"><b><u>Y. Li</u></b>, J. Lee, K. M. Ok</span></div>
-      <div>"KHC₂O₄·B(OH)₃: A Nonlinear Optical Crystal with Large Birefringence in The Short-Wavelength Ultraviolet Region"</div>
-      <div><span class="journal">Bull. Korean Chem. Soc.</span> 2023, 44, 788-794 <span class="badge" style="background:#fef9e7;color:#d4ac0d;">四区</span> <span class="badge badge-cover">Front Cover</span></div>
-    </div>
-
-    <div style="margin-top:16px;">
-      <span class="sub-toggle" onclick="toggleSub('coauthor-pubs')">📄 查看更多（共同作者论文） ▼</span>
-    </div>
-    <div id="coauthor-pubs" class="sub-content">
-
-      <div class="pub">
-        <div><span class="authors">C. Chen, <b><u>Y. Li</u></b>, C. Jin, et al.</span></div>
-        <div>"Density-Compensated Polarizability Anisotropy for Record Birefringence in Short-Wavelength Ultraviolet Inorganic Crystals"</div>
-        <div><span class="journal">J. Am. Chem. Soc.</span> 2026, 148, 11187-11195 <span class="badge badge-top">一区TOP</span></div>
-      </div>
-
-      <div class="pub">
-        <div><span class="authors">J. Lu, <b><u>Y. Li</u></b>, K. M. Ok</span></div>
-        <div>"Five-Membered [C₅O₅]²⁻ Rings as Birefringence-Active Genes for Ultrabirefringent Crystals"</div>
-        <div><span class="journal">J. Am. Chem. Soc.</span> 2025, 147, 35081-35089 <span class="badge badge-top">一区TOP</span></div>
-      </div>
-
-      <div class="pub">
-        <div><span class="authors">C. Chen, <b><u>Y. Li</u></b>, C. Jin, et al.</span></div>
-        <div>"CsICl₂: A Record-Birefringent Inorganic Crystal with Ultra-Wide Infrared Transparency"</div>
-        <div><span class="journal">J. Am. Chem. Soc.</span> 2025, 147, 26133-26138 <span class="badge badge-top">一区TOP</span></div>
-      </div>
-
-      <div class="pub">
-        <div><span class="authors">C. Chen, <b><u>Y. Li</u></b>, H. Huang, et al.</span></div>
-        <div>"Giant Birefringence Enabled by the Highly Anisotropic Linear IX₂⁻ (X = Cl, Br) Building Blocks"</div>
-        <div><span class="journal">Angew. Chem. Int. Ed.</span> 2025, e202506625 <span class="badge badge-top">一区TOP</span> <span class="badge badge-vip">Very Important Paper</span> <span class="badge badge-cover">Inside Front Cover</span></div>
-      </div>
-
-      <div class="pub">
-        <div><span class="authors">K. Kim, <b><u>Y. Li</u></b>, K. M. Ok</span></div>
-        <div>"Hafnium-based Chiral 2D Organic-Inorganic Hybrid Metal Halides"</div>
-        <div><span class="journal">J. Am. Chem. Soc.</span> 2025, 147, 2880–2888 <span class="badge badge-top">一区TOP</span></div>
-      </div>
-
-      <div class="pub">
-        <div><span class="authors">S. Choi, <b><u>Y. Li</u></b>, Y. Kuk, et al.</span></div>
-        <div>"(NH₄)₂Cd₂Cl₃F₃ and (NH₄)₂Cd₂Br₃F₃: The First Fluoride-Containing d¹⁰ Metal Mixed Halides"</div>
-        <div><span class="journal">Adv. Sci.</span> 2025, 12, 2414504 <span class="badge badge-top">一区TOP</span></div>
-      </div>
-
-      <div class="pub">
-        <div><span class="authors">J. Lee, J. Bin Cho, <b><u>Y. Li</u></b>, et al.</span></div>
-        <div>"Multifunctional Chiral d¹⁰-Metal Coordination Polymers"</div>
-        <div><span class="journal">Small</span> 2023, 2309323 <span class="badge badge-top">一区TOP</span></div>
-      </div>
-
-      <div class="pub">
-        <div><span class="authors">X. Wang, J. Lee, <b><u>Y. Li</u></b>, et al.</span></div>
-        <div>"Cd(NH₂SO₃)₂·xH₂O (x = 0, 2): New Sulfamates with Unique Coordination Environment"</div>
-        <div><span class="journal">Inorg. Chem. Front.</span> 2023, 10, 1411–1420 <span class="badge badge-top">一区TOP</span></div>
-      </div>
-
-      <div class="pub">
-        <div><span class="authors">Y. Heo, <b><u>Y. Li</u></b>, J. Kim, et al.</span></div>
-        <div>"Y(HPO₄)(NO₃)(H₂O)·2H₂O: A Solvent-Responsive Inorganic Layered Material"</div>
-        <div><span class="journal">Chem. Mater.</span> 2025, 37, 4910-4916 <span class="badge" style="background:#e8f8f0;color:#27ae60;">二区</span></div>
-      </div>
-
-      <div class="pub">
-        <div><span class="authors">Y. Kuk, Z. Bai, <b><u>Y. Li</u></b>, et al.</span></div>
-        <div>"Zwitterionic Glycine-based Antimony Fluorides with Exceptional Ultraviolet Nonlinear Optical Properties"</div>
-        <div><span class="journal">Chem. Mater.</span> 2025, 37, 1306-1313 <span class="badge" style="background:#e8f8f0;color:#27ae60;">二区</span></div>
-      </div>
-
-      <div class="pub">
-        <div><span class="authors">J. Lu, <b><u>Y. Li</u></b>, Y. Kuk, et al.</span></div>
-        <div>"Bi(SO₄)F·H₂O and Bi(SO₄)(NO₃)·3H₂O: Chemical Substitution-Induced Birefringence Enhancement"</div>
-        <div><span class="journal">Inorg. Chem.</span> 2024, 63, 13748-13754 <span class="badge" style="background:#e8f8f0;color:#27ae60;">二区TOP</span></div>
-      </div>
-
-      <div class="pub">
-        <div><span class="authors">M. Choi, <b><u>Y. Li</u></b>, K. M. Ok</span></div>
-        <div>"Designing Optical Anisotropy: Silver-Aminoalkylpyridine Nitrate Complexes"</div>
-        <div><span class="journal">Inorg. Chem.</span> 2024, 63, 2793–2802 <span class="badge" style="background:#e8f8f0;color:#27ae60;">二区TOP</span></div>
-      </div>
-
-      <div class="pub">
-        <div><span class="authors">A. Jung, <b><u>Y. Li</u></b>, K. M. Ok</span></div>
-        <div>"Chiral Amino Acid-Templated Tin Fluorides Tailoring Nonlinear Optical Properties"</div>
-        <div><span class="journal">Dalt. Trans.</span> 2024, 53, 105–114 <span class="badge" style="background:#e8f8f0;color:#27ae60;">二区</span></div>
-      </div>
-
-    </div>
+  <div class="pub">
+   <div><span class="authors"><b><u>Y. Li</u></b>, K. M. Ok</span></div>
+   <div>"Crystal Clear: Unveiling Giant Birefringence in Organic-Inorganic Cocrystals"</div>
+   <div><span class="journal">Chem. Sci.</span> 2024, 15, 10193-10199 <span class="badge badge-top">一区TOP</span></div>
   </div>
 
-  <!-- Awards -->
-  <div id="awards" class="section">
-    <h2>🏅 荣誉奖励</h2>
-    <div class="award"><span class="date">2025</span><span class="prize">教育部第3批博士后引才专项</span></div>
-    <div class="award"><span class="date">2024</span><span class="prize">Outstanding Graduate Student · 西江大学</span></div>
-    <div class="award"><span class="date">2024</span><span class="prize">Dean's Award (Top 1%) · 西江大学</span></div>
-    <div class="award"><span class="date">2022</span><span class="prize">Dean's Award (Top 1%) · 西江大学</span></div>
-    <div class="award"><span class="date">2023</span><span class="prize">西江大学校友奖学金（共4名）</span></div>
-    <div class="award"><span class="date">2024</span><span class="prize">西江大学国际学术论文奖学金</span></div>
-    <div class="award"><span class="date">2022</span><span class="prize">西江大学国际学术论文奖学金</span></div>
-    <div class="award"><span class="date">2022</span><span class="prize">西江大学化学系论文奖（第一名）</span></div>
-    <div class="award"><span class="date">2024</span><span class="prize">西江大学化学系论文奖（第二名）</span></div>
-    <div class="award"><span class="date">2021-2022</span><span class="prize">西江大学全球奖学金（S等）</span></div>
-    <div class="award"><span class="date">2018</span><span class="prize">国家奖学金</span></div>
-    <div class="award"><span class="date">2018</span><span class="prize">第四届"互联网+"大学生创新创业大赛新疆赛区金奖（排名第一）</span></div>
+  <div class="pub">
+   <div><span class="authors"><b><u>Y. Li</u></b>, X. Chen, K. M. Ok</span></div>
+   <div>"Strategically Designed Metal-Free Deep-Ultraviolet Birefringent Crystals with Superior Optical Properties"</div>
+   <div><span class="journal">Chem. Sci.</span> 2024, 15, 15145-15151 <span class="badge badge-top">一区TOP</span></div>
   </div>
 
-  <!-- Conferences -->
-  <div id="conferences" class="section">
-    <h2>🏛️ 学术会议</h2>
-    <div class="conf">
-      <span class="date">2023</span> — "Optical materials with giant birefringence" <strong>Oral Presentation</strong> for Young Inorganic Chemists，第131届韩国化学会春季会议
-    </div>
-    <div class="conf">
-      <span class="date">2024</span> — "Exploring Promising Metal-free Deep-Ultraviolet Birefringent Materials via Rational Tailoring Approach"，首尔新村地区化学系研究生会议（延世大学-西江大学-梨花女子大学）
-    </div>
+  <div class="pub">
+   <div><span class="authors">C. Jin<sup>+</sup>, <b><u>Y. Li</u></b><sup>+</sup>, C. Chen, et al.</span></div>
+   <div>"From Coplanarity to Coaxiality: A Linearity-Oriented Design Paradigm for Ultrahigh Ultraviolet Birefringent Inorganic Crystals"</div>
+   <div><span class="journal">J. Am. Chem. Soc.</span> 2026, 148, 19301-19310 <span class="badge badge-top">一区TOP</span></div>
   </div>
+
+  <div class="pub">
+   <div><span class="authors">C. Jin<sup>+</sup>, <b><u>Y. Li</u></b><sup>+</sup>, C. Chen, et al.</span></div>
+   <div>"Sulfonated Module Aggregation for Ultrahigh Birefringence in Aqueous-Processable Crystals"</div>
+   <div><span class="journal">J. Am. Chem. Soc.</span> 2025, 147, 39964-39973 <span class="badge badge-top">一区TOP</span></div>
+  </div>
+
+  <div class="pub">
+   <div><span class="authors">C. Jin<sup>+</sup>, <b><u>Y. Li</u></b><sup>+</sup>, J. Kim, et al.</span></div>
+   <div>"Exceptional Second Harmonic Generation in Ultraviolet Nonlinear Optical Oxyfluoroniobate Crystals"</div>
+   <div><span class="journal">Angew. Chem. Int. Ed.</span> 2025, e202512618 <span class="badge badge-top">一区TOP</span> <span class="badge badge-vip">Very Important Paper</span></div>
+  </div>
+
+  <div class="pub">
+   <div><span class="authors">X. Wang<sup>+</sup>, <b><u>Y. Li</u></b><sup>+</sup>, Z. Chen, et al.</span></div>
+   <div>"Sr(NO₃)(NH₂SO₃) · H₂O: First Nitrate Sulfamate Revealing Remarkable Second-Harmonic Generation and Optimized Birefringence"</div>
+   <div><span class="journal">Small Struct.</span> 2023, 2300274 <span class="badge" style="background:#e8f8f0;color:#27ae60;">二区</span></div>
+  </div>
+
+  <div class="pub">
+   <div><span class="authors"><b><u>Y. Li</u></b>, K. M. Ok</span></div>
+   <div>"Mg(H₂O)₆[(IO₂(OH))₂(IO₃)]₂: A New Iodate with A Very Large Band Gap and Optical Anisotropy"</div>
+   <div><span class="journal">J. Mater. Chem. C</span> 2022, 10, 8776–8782 <span class="badge" style="background:#e8f8f0;color:#27ae60;">二区TOP</span></div>
+  </div>
+
+  <div class="pub">
+   <div><span class="authors"><b><u>Y. Li</u></b>, X. Chen, K. M. Ok</span></div>
+   <div>"KF · B(OH)₃: a KBBF-Type Material with Large Birefringence and Remarkable Deep-Ultraviolet Transparency"</div>
+   <div><span class="journal">Chem. Commun.</span> 2022, 58, 8770-8773 <span class="badge" style="background:#e8f8f0;color:#27ae60;">二区TOP</span> <span class="badge badge-cover">Inside Front Cover</span></div>
+  </div>
+
+  <div class="pub">
+   <div><span class="authors"><b><u>Y. Li</u></b>, J. Huang, H. Chen</span></div>
+   <div>"Crystal Growth, Characterization and Theoretical Studies of The Noncentrosymmetric Compound Al₃(IO₃)₉ · (HIO₃)₆ · 18H₂O"</div>
+   <div><span class="journal">J. Alloys Compd.</span> 2021, 856, 157852 <span class="badge" style="background:#e8f8f0;color:#27ae60;">二区TOP</span></div>
+  </div>
+
+  <div class="pub">
+   <div><span class="authors"><b><u>Y. Li</u></b>, K. M. Ok</span></div>
+   <div>"Crystal Growth of K₂HCO₃F · H₂O with a Very Short Cutoff Edge and Large Birefringence"</div>
+   <div><span class="journal">Cryst. Growth Des.</span> 2022, 22, 5639–5644 <span class="badge" style="background:#e8f8f0;color:#27ae60;">二区</span></div>
+  </div>
+
+  <div class="pub">
+   <div><span class="authors"><b><u>Y. Li</u></b>, J. Lee, K. M. Ok</span></div>
+   <div>"Designed Metal-Free Quasi-1D Crystals with Giant Birefringence"</div>
+   <div><span class="journal">Chem-Eur J.</span> 2025, e202500849 <span class="badge" style="background:#fef9e7;color:#d4ac0d;">三区</span></div>
+  </div>
+
+  <div class="pub">
+   <div><span class="authors"><b><u>Y. Li</u></b>, J. Lee, K. M. Ok</span></div>
+   <div>"KHC₂O₄ · B(OH)₃: A Nonlinear Optical Crystal with Large Birefringence in The Short-Wavelength Ultraviolet Region"</div>
+   <div><span class="journal">Bull. Korean Chem. Soc.</span> 2023, 44, 788-794 <span class="badge" style="background:#fef9e7;color:#d4ac0d;">四区</span> <span class="badge badge-cover">Front Cover</span></div>
+  </div>
+
+  <div style="margin-top:16px;">
+   <span class="sub-toggle" onclick="toggleSub('coauthor-pubs')">📄 查看更多（共同作者论文） ▼</span>
+  </div>
+  <div id="coauthor-pubs" class="sub-content">
+
+   <div class="pub">
+    <div><span class="authors">C. Chen, <b><u>Y. Li</u></b>, C. Jin, et al.</span></div>
+    <div>"Density-Compensated Polarizability Anisotropy for Record Birefringence in Short-Wavelength Ultraviolet Inorganic Crystals"</div>
+    <div><span class="journal">J. Am. Chem. Soc.</span> 2026, 148, 11187-11195 <span class="badge badge-top">一区TOP</span></div>
+   </div>
+
+   <div class="pub">
+    <div><span class="authors">J. Lu, <b><u>Y. Li</u></b>, K. M. Ok</span></div>
+    <div>"Five-Membered [C₅O₅]²⁻ Rings as Birefringence-Active Genes for Ultrabirefringent Crystals"</div>
+    <div><span class="journal">J. Am. Chem. Soc.</span> 2025, 147, 35081-35089 <span class="badge badge-top">一区TOP</span></div>
+   </div>
+
+   <div class="pub">
+    <div><span class="authors">C. Chen, <b><u>Y. Li</u></b>, C. Jin, et al.</span></div>
+    <div>"CsICl₂: A Record-Birefringent Inorganic Crystal with Ultra-Wide Infrared Transparency"</div>
+    <div><span class="journal">J. Am. Chem. Soc.</span> 2025, 147, 26133-26138 <span class="badge badge-top">一区TOP</span></div>
+   </div>
+
+   <div class="pub">
+    <div><span class="authors">C. Chen, <b><u>Y. Li</u></b>, H. Huang, et al.</span></div>
+    <div>"Giant Birefringence Enabled by the Highly Anisotropic Linear IX₂⁻ (X = Cl, Br) Building Blocks"</div>
+    <div><span class="journal">Angew. Chem. Int. Ed.</span> 2025, e202506625 <span class="badge badge-top">一区TOP</span> <span class="badge badge-vip">Very Important Paper</span> <span class="badge badge-cover">Inside Front Cover</span></div>
+   </div>
+
+   <div class="pub">
+    <div><span class="authors">K. Kim, <b><u>Y. Li</u></b>, K. M. Ok</span></div>
+    <div>"Hafnium-based Chiral 2D Organic-Inorganic Hybrid Metal Halides"</div>
+    <div><span class="journal">J. Am. Chem. Soc.</span> 2025, 147, 2880–2888 <span class="badge badge-top">一区TOP</span></div>
+   </div>
+
+   <div class="pub">
+    <div><span class="authors">S. Choi, <b><u>Y. Li</u></b>, Y. Kuk, et al.</span></div>
+    <div>"(NH₄)₂Cd₂Cl₃F₃ and (NH₄)₂Cd₂Br₃F₃: The First Fluoride-Containing d¹⁰ Metal Mixed Halides"</div>
+    <div><span class="journal">Adv. Sci.</span> 2025, 12, 2414504 <span class="badge badge-top">一区TOP</span></div>
+   </div>
+
+   <div class="pub">
+    <div><span class="authors">J. Lee, J. Bin Cho, <b><u>Y. Li</u></b>, et al.</span></div>
+    <div>"Multifunctional Chiral d¹⁰-Metal Coordination Polymers"</div>
+    <div><span class="journal">Small</span> 2023, 2309323 <span class="badge badge-top">一区TOP</span></div>
+   </div>
+
+   <div class="pub">
+    <div><span class="authors">X. Wang, J. Lee, <b><u>Y. Li</u></b>, et al.</span></div>
+    <div>"Cd(NH₂SO₃)₂ · xH₂O (x = 0, 2): New Sulfamates with Unique Coordination Environment"</div>
+    <div><span class="journal">Inorg. Chem. Front.</span> 2023, 10, 1411–1420 <span class="badge badge-top">一区TOP</span></div>
+   </div>
+
+   <div class="pub">
+    <div><span class="authors">Y. Heo, <b><u>Y. Li</u></b>, J. Kim, et al.</span></div>
+    <div>"Y(HPO₄)(NO₃)(H₂O) · 2H₂O: A Solvent-Responsive Inorganic Layered Material"</div>
+    <div><span class="journal">Chem. Mater.</span> 2025, 37, 4910-4916 <span class="badge" style="background:#e8f8f0;color:#27ae60;">二区</span></div>
+   </div>
+
+   <div class="pub">
+    <div><span class="authors">Y. Kuk, Z. Bai, <b><u>Y. Li</u></b>, et al.</span></div>
+    <div>"Zwitterionic Glycine-based Antimony Fluorides with Exceptional Ultraviolet Nonlinear Optical Properties"</div>
+    <div><span class="journal">Chem. Mater.</span> 2025, 37, 1306-1313 <span class="badge" style="background:#e8f8f0;color:#27ae60;">二区</span></div>
+   </div>
+
+   <div class="pub">
+    <div><span class="authors">J. Lu, <b><u>Y. Li</u></b>, Y. Kuk, et al.</span></div>
+    <div>"Bi(SO₄)F · H₂O and Bi(SO₄)(NO₃) · 3H₂O: Chemical Substitution-Induced Birefringence Enhancement"</div>
+    <div><span class="journal">Inorg. Chem.</span> 2024, 63, 13748-13754 <span class="badge" style="background:#e8f8f0;color:#27ae60;">二区TOP</span></div>
+   </div>
+
+   <div class="pub">
+    <div><span class="authors">M. Choi, <b><u>Y. Li</u></b>, K. M. Ok</span></div>
+    <div>"Designing Optical Anisotropy: Silver-Aminoalkylpyridine Nitrate Complexes"</div>
+    <div><span class="journal">Inorg. Chem.</span> 2024, 63, 2793–2802 <span class="badge" style="background:#e8f8f0;color:#27ae60;">二区TOP</span></div>
+   </div>
+
+   <div class="pub">
+    <div><span class="authors">A. Jung, <b><u>Y. Li</u></b>, K. M. Ok</span></div>
+    <div>"Chiral Amino Acid-Templated Tin Fluorides Tailoring Nonlinear Optical Properties"</div>
+    <div><span class="journal">Dalt. Trans.</span> 2024, 53, 105–114 <span class="badge" style="background:#e8f8f0;color:#27ae60;">二区</span></div>
+   </div>
+
+  </div>
+ </div>
+
+ <!-- Awards -->
+ <div id="awards" class="section">
+  <h2>🏅 荣誉奖励</h2>
+  <div class="award"><span class="date">2025</span><span class="prize">教育部第3批博士后引才专项</span></div>
+  <div class="award"><span class="date">2024</span><span class="prize">Outstanding Graduate Student · 西江大学</span></div>
+  <div class="award"><span class="date">2024</span><span class="prize">Dean's Award (Top 1%) · 西江大学</span></div>
+  <div class="award"><span class="date">2022</span><span class="prize">Dean's Award (Top 1%) · 西江大学</span></div>
+  <div class="award"><span class="date">2023</span><span class="prize">西江大学校友奖学金（共4名）</span></div>
+  <div class="award"><span class="date">2024</span><span class="prize">西江大学国际学术论文奖学金</span></div>
+  <div class="award"><span class="date">2022</span><span class="prize">西江大学国际学术论文奖学金</span></div>
+  <div class="award"><span class="date">2022</span><span class="prize">西江大学化学系论文奖（第一名）</span></div>
+  <div class="award"><span class="date">2024</span><span class="prize">西江大学化学系论文奖（第二名）</span></div>
+  <div class="award"><span class="date">2021-2022</span><span class="prize">西江大学全球奖学金（S等）</span></div>
+  <div class="award"><span class="date">2018</span><span class="prize">国家奖学金</span></div>
+  <div class="award"><span class="date">2018</span><span class="prize">第四届"互联网+"大学生创新创业大赛新疆赛区金奖（排名第一）</span></div>
+ </div>
+
+ <!-- Conferences -->
+ <div id="conferences" class="section">
+  <h2>🏛️ 学术会议</h2>
+  <div class="conf">
+   <span class="date">2023</span> — "Optical materials with giant birefringence" <strong>Oral Presentation</strong> for Young Inorganic Chemists，第131届韩国化学会春季会议
+  </div>
+  <div class="conf">
+   <span class="date">2024</span> — "Exploring Promising Metal-free Deep-Ultraviolet Birefringent Materials via Rational Tailoring Approach"，首尔新村地区化学系研究生会议（延世大学-西江大学-梨花女子大学）
+  </div>
+ </div>
 
 
 
 </div>
 
 <div class="footer">
-  皖西学院材化学院 · 李洋 · lycrystal@wxc.edu.cn
+ 皖西学院材化学院 · 李洋 · lycrystal@wxc.edu.cn
 </div>
 
 <script>
 function toggleSub(id) {
-  var el = document.getElementById(id);
-  el.classList.toggle('open');
-  var toggler = el.previousElementSibling.querySelector('.sub-toggle') || el.previousElementSibling;
-  if (toggler) {
-    toggler.textContent = el.classList.contains('open') ? toggler.textContent.replace('▼','▲') : toggler.textContent.replace('▲','▼');
-  }
+ var el = document.getElementById(id);
+ el.classList.toggle('open');
+ var toggler = el.previousElementSibling.querySelector('.sub-toggle') || el.previousElementSibling;
+ if (toggler) {
+  toggler.textContent = el.classList.contains('open') ? toggler.textContent.replace('▼','▲') : toggler.textContent.replace('▲','▼');
+ }
 }
 </script>
 
