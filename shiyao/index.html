@@ -184,6 +184,8 @@ function render() {
         else html += '<td><span class="badge badge-ok">'+val+'</span></td>';
       } else if (c.key === 'loc' && val) {
         html += '<td><span class="loc-badge">'+val+'</span></td>';
+      } else if (c.key === 'cas' && val) {
+        html += '<td><a href="https://www.chemicalbook.com/CAS/'+val+'.htm" target="_blank" style="color:#2980b9;text-decoration:none;" title="在ChemicalBook上查看详情">'+val+'</a></td>';
       } else {
         html += '<td>'+(val||'')+'</td>';
       }
