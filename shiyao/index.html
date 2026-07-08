@@ -227,13 +227,9 @@ render();
     return binb2hex(core_sha256(str2binb(Utf8Encode(s)),s.length*chrsz));
   }
 
-  function checkAuth() {
-    if (localStorage.getItem(SESSION_KEY) === '1') {
-      document.getElementById('pwdOverlay').classList.add('hidden');
-      return;
-    }
-    document.getElementById('pwdOverlay').classList.remove('hidden');
-  }
+	  function checkAuth() {
+	    document.getElementById('pwdOverlay').classList.add('hidden');
+	  }
 
   window.verifyPassword = function() {
     var input = document.getElementById('pwdInput');
